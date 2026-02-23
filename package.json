@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-builder",
+  "version": "1.0.0",
+  "description": "portfolio builder application",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "install-all": "npm install && npm install -w backend && npm install -w frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prisma": "^7.4.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.4.0"
+  }
+}
