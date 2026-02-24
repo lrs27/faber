@@ -40,6 +40,6 @@ ctx.strokeText('Faber', cx, cy);
 ctx.fillStyle = '#DDD0C5';
 ctx.fillText('Faber', cx, cy);
 
-const outPath = join(__dirname, '..', 'public', 'faber-logo-final.png');
+const outPath = join(__dirname, '..', 'frontend', 'public', 'faber-logo-final.png');
 writeFileSync(outPath, canvas.toBuffer('image/png'));
 console.log('Logo generated!');
