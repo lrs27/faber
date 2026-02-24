@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userId           String      @id @db.VarChar(255)
+  email            String      @unique @db.VarChar(255)
+  displayName      String      @db.VarChar(255)
+  profileImageUrl  String?     @db.VarChar(500)
+  role             String?     @db.VarChar(50)
+  createdAt        DateTime    @default(now()) @db.Timestamp()
+  updatedAt        DateTime    @updatedAt @db.Timestamp()
+  isActive         Boolean     @default(true)
+  portfolios       Portfolios[]
+  aiFeedback       AIFeedback[]
+  contactSubmissions ContactSubmissions[]
+  media            Media[]
+}
+
+model Templates {
+  templateId    String      @id @db.VarChar(255)
+  name          String      @db.VarChar(255)
+  description   String?
+  thumbnailUrl  String?     @db.VarChar(500)
+  category      String?     @db.VarChar(50)
+  layoutConfig  Json?
+  colorScheme   Json?
+  fontConfig    Json?
+  isActive      Boolean     @default(true)
+  isPremium     Boolean     @default(false)
+  createdAt     DateTime    @default(now()) @db.Timestamp()
+  updatedAt     DateTime    @updatedAt @db.Timestamp()
+  portfolios    Portfolios[]
+}
+
+model Portfolios {
+  portfolioId       String      @id @db.VarChar(255)
+  userId            String      @db.VarChar(255)
+  title             String      @db.VarChar(255)
+  slug              String      @db.VarChar(255)
+  templateId        String?     @db.VarChar(255)
+  customDomain      String?     @db.VarChar(255)
+  isPublished       Boolean?    @default(false)
+  publishedUrl      String?     @db.VarChar(500)
+  createdAt         DateTime    @default(now()) @db.Timestamp()
+  updatedAt         DateTime    @updatedAt @db.Timestamp()
+  aiScore           Int?
+  viewCount         Int?        @default(0)
+  user              Users       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  template          Templates?  @relation(fields: [templateId], references: [templateId], onDelete: SetNull)
+  aiFeedback        AIFeedback[]
+  projects          Projects[]
+  contactSubmissions ContactSubmissions[]
+  media             Media[]
+  sections          Sections[]
+}
+
+model AIFeedback {
+  feedbackId              String      @id @db.VarChar(255)
+  portfolioId             String      @db.VarChar(255)
+  userId                  String      @db.VarChar(255)
+  overallScore            Int?
+  designScore             Int?
+  contentScore            Int?
+  professionalismScore    Int?
+  suggestions             Json?
+  strengths               Json?
+  weaknesses              Json?
+  rawResponse             String?
+  createdAt               DateTime    @default(now()) @db.Timestamp()
+  portfolio               Portfolios  @relation(fields: [portfolioId], references: [portfolioId], onDelete: Cascade)
+  user                    Users       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model Projects {
+  projectId       String      @id @db.VarChar(255)
+  portfolioId     String      @db.VarChar(255)
+  title           String      @db.VarChar(255)
+  description     String?
+  imageUrls       Json?
+  projectUrl      String     @db.VarChar(500)
+  githubUrl       String?     @db.VarChar(500)
+  technologies    Json
+  order           Int?
+  startDate       DateTime?   @db.Timestamp()
+  endDate         DateTime?   @db.Timestamp()
+  createdAt       DateTime    @default(now()) @db.Timestamp()
+  updatedAt       DateTime    @updatedAt @db.Timestamp()
+  portfolio       Portfolios  @relation(fields: [portfolioId], references: [portfolioId], onDelete: Cascade)
+}
+
+model ContactSubmissions {
+  submissionId    String      @id @db.VarChar(255)
+  portfolioId     String      @db.VarChar(255)
+  userId          String      @db.VarChar(255)
+  senderName      String      @db.VarChar(255)
+  senderEmail     String      @db.VarChar(255)
+  subject         String      @db.VarChar(255)
+  message         String
+  isRead          Boolean     @default(false)
+  createdAt       DateTime    @default(now()) @db.Timestamp()
+  portfolio       Portfolios  @relation(fields: [portfolioId], references: [portfolioId], onDelete: Cascade)
+  user            Users       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model Media {
+  mediaId         String      @id @db.VarChar(255)
+  userId          String      @db.VarChar(255)
+  portfolioId     String?     @db.VarChar(255)
+  fileName        String      @db.VarChar(255)
+  fileType        String?     @db.VarChar(50)
+  mimeType        String?     @db.VarChar(100)
+  fileSize        Int
+  storageUrl      String      @db.VarChar(500)
+  thumbnailUrl    String?     @db.VarChar(500)
+  altText         String?     @db.VarChar(255)
+  createdAt       DateTime    @default(now()) @db.Timestamp()
+  user            Users       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  portfolio       Portfolios? @relation(fields: [portfolioId], references: [portfolioId], onDelete: Cascade)
+}
+
+model Sections {
+  sectionId       String      @id @db.VarChar(255)
+  portfolioId     String      @db.VarChar(255)
+  type            String      @db.VarChar(50)
+  title           String?     @db.VarChar(255)
+  content         String?
+  order           Int?
+  isVisible       Boolean     @default(true)
+  settings        Json?
+  createdAt       DateTime    @default(now()) @db.Timestamp()
+  updatedAt       DateTime    @updatedAt @db.Timestamp()
+  portfolio       Portfolios  @relation(fields: [portfolioId], references: [portfolioId], onDelete: Cascade)
+}
+
