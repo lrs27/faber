@@ -1,5 +1,5 @@
 {
-  "name": "portfolio-builder-backend",
+  "name": "@faber/backend",
   "version": "1.0.0",
   "description": "Backend API for portfolio builder",
   "main": "src/index.js",
