@@ -11,9 +11,12 @@ datasource db {
 }
 
 model Users {
-  userId           String      @id @db.VarChar(255)
+  userId           String      @id @default(uuid()) @db.VarChar(255)
   email            String      @unique @db.VarChar(255)
   displayName      String      @db.VarChar(255)
+  passwordHash     String?     @db.VarChar(255)  // bcrypt hash, null for OAuth users
+  authProvider     String      @default("email") @db.VarChar(50)  // "email" | "google"
+  googleId         String?     @unique @db.VarChar(255)  // Google OAuth ID
   profileImageUrl  String?     @db.VarChar(500)
   role             String?     @db.VarChar(50)
   createdAt        DateTime    @default(now()) @db.Timestamp()

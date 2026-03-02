@@ -9,11 +9,13 @@ import Link from "next/link";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    displayName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,27 +29,39 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    if (!formData.email || !formData.password) {
-      setError("Email and password are required");
+    // Validation
+    if (!formData.displayName || !formData.email || !formData.password) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
+          displayName: formData.displayName,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Login failed");
+        setError(data.error || "Signup failed");
         return;
       }
 
@@ -59,14 +73,15 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (err) {
       setError("Failed to connect to server. Please try again.");
-      console.error("Login error:", err);
+      console.error("Signup error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleSignup = () => {
     // TODO: Implement Google OAuth flow
+    // This would typically redirect to Google OAuth or use a library like next-auth
     alert("Google OAuth integration coming soon!");
   };
 
@@ -74,7 +89,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col bg-cream">
       <Navbar />
 
-      {/* ===== LOGIN SECTION ===== */}
+      {/* ===== SIGNUP SECTION ===== */}
       <section className="flex-1 flex items-center justify-center px-8 md:px-16 py-16 md:py-24">
         <div className="flex flex-col lg:flex-row items-center gap-16 max-w-5xl w-full">
           {/* Left side — branding */}
@@ -94,18 +109,18 @@ export default function LoginPage() {
               Build Bold, Get Hired.
             </p>
             <p className="mt-4 text-brown/60 max-w-sm mx-auto lg:mx-0">
-              Sign in to access your dashboard, manage your portfolio, and browse templates.
+              Create your account to start building your portfolio and stand out to employers.
             </p>
           </div>
 
-          {/* Right side — login form */}
+          {/* Right side — signup form */}
           <div className="flex-1 w-full max-w-md">
             <div className="bg-white rounded-2xl border-2 border-dark-green/10 p-8 shadow-[6px_6px_0_rgba(0,0,0,0.08)]">
               <h2
                 className="text-2xl font-bold text-dark-green mb-6"
                 style={{ fontFamily: "var(--font-playfair)" }}
               >
-                Welcome back
+                Create your account
               </h2>
 
               {error && (
@@ -115,6 +130,20 @@ export default function LoginPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-dark-green mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="displayName"
+                    value={formData.displayName}
+                    onChange={handleChange}
+                    placeholder="Your full name"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-dark-green/10 bg-cream/50 text-dark-green placeholder:text-brown/40 focus:outline-none focus:border-gold transition-colors"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-sm font-semibold text-dark-green mb-2">
                     Email
@@ -138,7 +167,21 @@ export default function LoginPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Your password"
+                    placeholder="Create a password (min 8 characters)"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-dark-green/10 bg-cream/50 text-dark-green placeholder:text-brown/40 focus:outline-none focus:border-gold transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-dark-green mb-2">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Confirm your password"
                     className="w-full px-4 py-3 rounded-xl border-2 border-dark-green/10 bg-cream/50 text-dark-green placeholder:text-brown/40 focus:outline-none focus:border-gold transition-colors"
                   />
                 </div>
@@ -148,7 +191,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full px-6 py-3 bg-dark-green text-cream font-semibold rounded-full border-2 border-dark-green hover:bg-brown hover:border-brown transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Signing In..." : "Sign In"}
+                  {loading ? "Creating Account..." : "Create Account"}
                 </button>
               </form>
 
@@ -159,16 +202,16 @@ export default function LoginPage() {
               </div>
 
               <button
-                onClick={handleGoogleLogin}
+                onClick={handleGoogleSignup}
                 className="mt-6 w-full px-6 py-3 bg-white text-dark-green font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors"
               >
                 Continue with Google
               </button>
 
               <p className="mt-6 text-center text-sm text-brown/50">
-                Don&apos;t have an account?{" "}
-                <Link href="/signup" className="text-gold font-semibold hover:text-brown transition-colors">
-                  Sign Up
+                Already have an account?{" "}
+                <Link href="/login" className="text-gold font-semibold hover:text-brown transition-colors">
+                  Sign In
                 </Link>
               </p>
             </div>
