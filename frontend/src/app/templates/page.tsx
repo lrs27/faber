@@ -6,45 +6,57 @@ import Link from "next/link";
 const templates = [
   {
     name: "Minimal",
+    slug: null,
     description: "Clean, typographic, timeless. Perfect for those who let their work speak.",
     gradient: "from-gold/30 to-orange/20",
     hoverBorder: "hover:border-gold",
     tags: ["Clean", "Typography"],
+    available: false,
   },
   {
     name: "Developer",
+    slug: "developer",
     description: "Terminal-inspired, dark mode ready. Built for devs who live in the command line.",
     gradient: "from-light-blue/30 to-blue/20",
     hoverBorder: "hover:border-blue",
     tags: ["Dark Mode", "Code"],
+    available: true,
   },
   {
     name: "Creative",
+    slug: null,
     description: "Bold colors, playful layout. Stand out from the crowd with personality.",
     gradient: "from-pink/30 to-orange/20",
     hoverBorder: "hover:border-pink",
     tags: ["Colorful", "Fun"],
+    available: false,
   },
   {
     name: "Academic",
+    slug: "academic",
     description: "Research-focused, publication ready. Showcase your papers and coursework.",
     gradient: "from-dark-green/20 to-gold/15",
     hoverBorder: "hover:border-dark-green",
     tags: ["Research", "Papers"],
+    available: true,
   },
   {
     name: "Startup",
+    slug: null,
     description: "Bold and modern. For builders who want to show off side projects and MVPs.",
     gradient: "from-orange/30 to-yellow/20",
     hoverBorder: "hover:border-orange",
     tags: ["Modern", "Projects"],
+    available: false,
   },
   {
     name: "Retro",
+    slug: null,
     description: "Nostalgic vibes, pixel-perfect. A throwback aesthetic with modern functionality.",
     gradient: "from-brown/20 to-gold/20",
     hoverBorder: "hover:border-brown",
     tags: ["Vintage", "Playful"],
+    available: false,
   },
 ];
 
@@ -75,34 +87,48 @@ export default function TemplatesPage() {
       <section className="px-8 md:px-16 py-16 md:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {templates.map((template) => (
-              <div
-                key={template.name}
-                className={`group rounded-2xl border-2 border-dark-green/10 overflow-hidden bg-white ${template.hoverBorder} transition-all hover:shadow-[6px_6px_0_rgba(0,0,0,0.1)] cursor-pointer`}
-              >
-                <div className={`h-52 bg-gradient-to-br ${template.gradient} flex items-end p-5`}>
-                  <div className="flex gap-2">
-                    {template.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs font-bold text-dark-green bg-cream/80 rounded-full px-3 py-1"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+            {templates.map((template) => {
+              const CardWrapper = template.available ? Link : "div";
+              const cardProps = template.available
+                ? { href: `/templates/${template.slug}` }
+                : {};
+
+              return (
+                <CardWrapper
+                  key={template.name}
+                  {...cardProps}
+                  className={`group rounded-2xl border-2 border-dark-green/10 overflow-hidden bg-white ${template.hoverBorder} transition-all hover:shadow-[6px_6px_0_rgba(0,0,0,0.1)] cursor-pointer block`}
+                >
+                  <div className={`h-52 bg-gradient-to-br ${template.gradient} flex items-end p-5 relative`}>
+                    <div className="flex gap-2">
+                      {template.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs font-bold text-dark-green bg-cream/80 rounded-full px-3 py-1"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-dark-green mb-2">{template.name}</h3>
-                  <p className="text-sm text-brown/60 leading-relaxed mb-4">
-                    {template.description}
-                  </p>
-                  <button className="text-sm font-semibold text-gold hover:text-brown transition-colors">
-                    Preview &rarr;
-                  </button>
-                </div>
-              </div>
-            ))}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-dark-green mb-2">{template.name}</h3>
+                    <p className="text-sm text-brown/60 leading-relaxed mb-4">
+                      {template.description}
+                    </p>
+                    {template.available ? (
+                      <span className="text-sm font-semibold text-gold hover:text-brown transition-colors">
+                        Preview &rarr;
+                      </span>
+                    ) : (
+                      <span className="text-sm font-semibold text-brown/40">
+                        Coming Soon
+                      </span>
+                    )}
+                  </div>
+                </CardWrapper>
+              );
+            })}
           </div>
         </div>
       </section>
