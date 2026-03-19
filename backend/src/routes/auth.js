@@ -221,4 +221,141 @@ router.get("/me", async (req, res) => {
   }
 });
 
+// GET /api/auth/dashboard-stats - Get user's dashboard statistics
+router.get("/dashboard-stats", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Get user's portfolios with stats
+    const portfolios = await prisma.portfolios.findMany({
+      where: { userId: decoded.userId },
+      select: {
+        portfolioId: true,
+        title: true,
+        slug: true,
+        aiScore: true,
+        viewCount: true,
+        isPublished: true,
+        createdAt: true,
+        updatedAt: true,
+        template: {
+          select: { name: true }
+        }
+      },
+      orderBy: { updatedAt: "desc" }
+    });
+
+    // Get recent AI feedback for this user
+    const recentFeedback = await prisma.aIFeedback.findMany({
+      where: { userId: decoded.userId },
+      select: {
+        feedbackId: true,
+        overallScore: true,
+        createdAt: true,
+        portfolio: {
+          select: { title: true }
+        }
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10
+    });
+
+    // Calculate stats
+    const portfolioCount = portfolios.length;
+    const totalViews = portfolios.reduce((sum, p) => sum + (p.viewCount || 0), 0);
+    
+    // Calculate average AI score (only from portfolios that have been scored)
+    const scoredPortfolios = portfolios.filter(p => p.aiScore !== null);
+    const avgAiScore = scoredPortfolios.length > 0
+      ? Math.round(scoredPortfolios.reduce((sum, p) => sum + p.aiScore, 0) / scoredPortfolios.length)
+      : 0;
+
+    // Build activity feed from real data
+    const activities = [];
+
+    // Add portfolio creation/update activities
+    for (const p of portfolios) {
+      // Check if created recently (within last 30 days)
+      const createdAt = new Date(p.createdAt);
+      const updatedAt = new Date(p.updatedAt);
+      const now = new Date();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+      // If created and updated at same time, it's a new portfolio
+      if (Math.abs(createdAt.getTime() - updatedAt.getTime()) < 1000) {
+        if (createdAt > thirtyDaysAgo) {
+          activities.push({
+            action: "Created portfolio",
+            portfolio: p.title,
+            time: p.createdAt
+          });
+        }
+      } else {
+        // Portfolio was updated
+        if (updatedAt > thirtyDaysAgo) {
+          activities.push({
+            action: "Updated portfolio",
+            portfolio: p.title,
+            time: p.updatedAt
+          });
+        }
+      }
+
+      // Published portfolio activity
+      if (p.isPublished && createdAt > thirtyDaysAgo) {
+        activities.push({
+          action: "Published portfolio",
+          portfolio: p.title,
+          time: p.updatedAt
+        });
+      }
+    }
+
+    // Add AI feedback activities
+    for (const feedback of recentFeedback) {
+      activities.push({
+        action: `AI Score: ${feedback.overallScore}`,
+        portfolio: feedback.portfolio.title,
+        time: feedback.createdAt
+      });
+    }
+
+    // Sort by time descending and take top 10
+    activities.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+    const recentActivity = activities.slice(0, 10);
+
+    res.json({
+      stats: {
+        portfolioCount,
+        avgAiScore,
+        totalViews
+      },
+      portfolios: portfolios.map(p => ({
+        portfolioId: p.portfolioId,
+        name: p.title,
+        slug: p.slug,
+        template: p.template?.name || "Custom",
+        lastEdited: p.updatedAt,
+        score: p.aiScore || 0,
+        viewCount: p.viewCount || 0,
+        isPublished: p.isPublished
+      })),
+      recentActivity
+    });
+  } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+    console.error("Dashboard stats error:", error);
+    res.status(500).json({ error: "Failed to fetch dashboard stats" });
+  }
+});
+
 export default router;

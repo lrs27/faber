@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import CheckeredBorder from "@/components/CheckeredBorder";
 import Marquee from "@/components/Marquee";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
 import Link from "next/link";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
@@ -63,11 +64,6 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth flow
-    alert("Google OAuth integration coming soon!");
   };
 
   return (
@@ -158,12 +154,12 @@ export default function LoginPage() {
                 <div className="flex-1 h-px bg-dark-green/10" />
               </div>
 
-              <button
-                onClick={handleGoogleLogin}
-                className="mt-6 w-full px-6 py-3 bg-white text-dark-green font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors"
-              >
-                Continue with Google
-              </button>
+              <div className="mt-6">
+                <GoogleAuthButton 
+                  mode="login" 
+                  onError={(err) => setError(err)} 
+                />
+              </div>
 
               <p className="mt-6 text-center text-sm text-brown/50">
                 Don&apos;t have an account?{" "}
