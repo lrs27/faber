@@ -97,7 +97,7 @@ export default function TemplatesPage() {
                   <p className="text-sm text-brown/60 leading-relaxed mb-4">
                     {template.description}
                   </p>
-                  {["minimal", "startup"].includes(template.name.toLowerCase()) ? (
+                  {["minimal", "startup", "creative"].includes(template.name.toLowerCase()) ? (
                     <Link
                       href={`/editor/${template.name.toLowerCase()}`}
                       className="text-sm font-semibold text-gold hover:text-brown transition-colors"
