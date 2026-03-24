@@ -1,0 +1,15 @@
+{
+  "name": "faber",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @faber/frontend & npm run dev -w @faber/backend",
+    "dev:frontend": "npm run dev -w @faber/frontend",
+    "dev:backend": "npm run dev -w @faber/backend",
+    "build": "npm run build -w @faber/frontend"
+  }
+}

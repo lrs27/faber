@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-cream: #FDF5EC;
+  --color-gold: #C8963E;
+  --color-brown: #8B5E3C;
+  --color-dark-green: #1B4D3E;
+  --color-beige: #E8DDD3;
+  --color-orange: #FF6B35;
+  --color-yellow: #F7C948;
+  --color-blue: #4169E1;
+  --color-light-blue: #A8D5E5;
+  --color-pink: #FFB5C2;
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-playfair);
+  --font-logo: var(--font-lobster);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-dark-green);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Checkered border pattern */
+.checkered-border {
+  height: 28px;
+  background-image:
+    linear-gradient(45deg, var(--color-brown) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-brown) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-brown) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-brown) 75%);
+  background-size: 28px 28px;
+  background-position: 0 0, 0 14px, 14px -14px, -14px 0;
+  background-color: var(--color-cream);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 20s linear infinite;
+}
+
+/* Retro shadow for logo text — thick bubbly drop shadow */
+.retro-shadow {
+  text-shadow:
+    3px 3px 0 rgba(139, 94, 60, 0.12),
+    5px 5px 0 rgba(139, 94, 60, 0.10),
+    7px 7px 0 rgba(139, 94, 60, 0.08),
+    9px 9px 0 rgba(139, 94, 60, 0.06),
+    11px 11px 0 rgba(139, 94, 60, 0.04),
+    13px 13px 0 rgba(139, 94, 60, 0.02);
+}
+
+/* Sticker rotation */
+.sticker-rotate {
+  transform: rotate(-8deg);
+}
+
+.sticker-rotate-right {
+  transform: rotate(12deg);
+}
