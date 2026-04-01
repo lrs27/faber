@@ -1,5 +1,19 @@
 "use client";
 
+// Academic sections
+import AcademicHero from "./sections/academic/AcademicHero";
+import AcademicAbout from "./sections/academic/AcademicAbout";
+import AcademicSkills from "./sections/academic/AcademicSkills";
+import AcademicProjects from "./sections/academic/AcademicProjects";
+import AcademicContact from "./sections/academic/AcademicContact";
+
+// Developer sections
+import DeveloperHero from "./sections/developer/DeveloperHero";
+import DeveloperAbout from "./sections/developer/DeveloperAbout";
+import DeveloperSkills from "./sections/developer/DeveloperSkills";
+import DeveloperProjects from "./sections/developer/DeveloperProjects";
+import DeveloperContact from "./sections/developer/DeveloperContact";
+
 import { Dispatch } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -110,13 +124,29 @@ function renderSection(section: Section, style: TemplateStyle, dispatch: Dispatc
       case "projects": return <MinimalProjects {...props} section={section} />;
       case "contact": return <MinimalContact {...props} section={section} />;
     }
-  } else {
+  } else if (style === "startup" || style === "creative") {
     switch (section.type) {
       case "hero": return <StartupHero {...props} section={section} />;
       case "about": return <StartupAbout {...props} section={section} />;
       case "skills": return <StartupSkills {...props} section={section} />;
       case "projects": return <StartupProjects {...props} section={section} />;
       case "contact": return <StartupContact {...props} section={section} />;
+    }
+  } else if (style === "academic") {
+    switch (section.type) {
+      case "hero": return <AcademicHero {...props} section={section} />;
+      case "about": return <AcademicAbout {...props} section={section} />;
+      case "skills": return <AcademicSkills {...props} section={section} />;
+      case "projects": return <AcademicProjects {...props} section={section} />;
+      case "contact": return <AcademicContact {...props} section={section} />;
+    }
+  } else if (style === "developer") {
+    switch (section.type) {
+      case "hero": return <DeveloperHero {...props} section={section} />;
+      case "about": return <DeveloperAbout {...props} section={section} />;
+      case "skills": return <DeveloperSkills {...props} section={section} />;
+      case "projects": return <DeveloperProjects {...props} section={section} />;
+      case "contact": return <DeveloperContact {...props} section={section} />;
     }
   }
 }
