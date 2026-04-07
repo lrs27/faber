@@ -16,7 +16,7 @@ export default function InlineEditable({
   onChange,
   as: Tag = "span",
   className = "",
-  placeholder = "Click to edit...",
+  placeholder = "",
   multiline = false,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);

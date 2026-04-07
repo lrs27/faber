@@ -16,7 +16,14 @@ export default function StartupAbout({ section, dispatch }: Props) {
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
         <div className="shrink-0">
           <div className="w-36 h-36 rounded-2xl bg-gradient-to-br from-pink/60 to-orange/40 border-4 border-blue flex items-center justify-center shadow-[6px_6px_0_rgba(0,0,0,0.15)] rotate-[-3deg]">
-            <span className="text-3xl font-bold text-white/80 tracking-widest">MM</span>
+            <InlineEditable
+              value={content.avatarInitials || "MM"}
+              onChange={(avatarInitials) =>
+                dispatch({ type: "UPDATE_CONTENT", sectionId: section.id, content: { avatarInitials } })
+              }
+              className="text-3xl font-bold text-white/80 tracking-widest bg-transparent outline-none border-none text-center"
+              as="span"
+            />
           </div>
         </div>
         <div className="text-center md:text-left">

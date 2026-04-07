@@ -227,11 +227,13 @@ export default function EditorShell({ templateStyle }: Props) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [dispatch]);
 
+  // Capitalize first letter for display
+  const displayName = templateStyle.charAt(0).toUpperCase() + templateStyle.slice(1);
   return (
     <div className="flex h-screen overflow-hidden">
       <EditorSidebar
         sections={state.sections}
-        templateName={templateStyle === "minimal" ? "Minimal" : "Startup"}
+        templateName={displayName}
         dispatch={dispatch}
         onReset={handleReset}
         selectedSection={selectedSection}

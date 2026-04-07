@@ -20,7 +20,7 @@ const templates = [
     gradient: "from-light-blue/30 to-blue/20",
     hoverBorder: "hover:border-blue",
     tags: ["Dark Mode", "Code"],
-    available: true,
+    available: false,
   },
   {
     name: "Creative",
@@ -38,7 +38,7 @@ const templates = [
     gradient: "from-dark-green/20 to-gold/15",
     hoverBorder: "hover:border-dark-green",
     tags: ["Research", "Papers"],
-    available: true,
+    available: false,
   },
   {
     name: "Startup",
@@ -87,16 +87,11 @@ export default function TemplatesPage() {
       <section className="px-8 md:px-16 py-16 md:py-24">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {templates.map((template) => {
-              const CardWrapper = template.available ? Link : "div";
-              const cardProps = template.available
-                ? { href: `/templates/${template.slug}` }
-                : {};
-
-              return (
-                <CardWrapper
+            {templates.map((template) =>
+              template.available ? (
+                <Link
                   key={template.name}
-                  {...cardProps}
+                  href={`/templates/${template.slug}`}
                   className={`group rounded-2xl border-2 border-dark-green/10 overflow-hidden bg-white ${template.hoverBorder} transition-all hover:shadow-[6px_6px_0_rgba(0,0,0,0.1)] cursor-pointer block`}
                 >
                   <div className={`h-52 bg-gradient-to-br ${template.gradient} flex items-end p-5 relative`}>
@@ -116,67 +111,68 @@ export default function TemplatesPage() {
                     <p className="text-sm text-brown/60 leading-relaxed mb-4">
                       {template.description}
                     </p>
-                    {["minimal", "startup", "creative", "retro"].includes(template.name.toLowerCase()) ? (
+                    <span className="text-sm font-semibold text-gold hover:text-brown transition-colors">
+                      Preview &rarr;
+                    </span>
+                  </div>
+                </Link>
+              ) : (
+                <div
+                  key={template.name}
+                  className={`group rounded-2xl border-2 border-dark-green/10 overflow-hidden bg-white ${template.hoverBorder} transition-all hover:shadow-[6px_6px_0_rgba(0,0,0,0.1)] cursor-pointer block`}
+                >
+                  <div className={`h-52 bg-gradient-to-br ${template.gradient} flex items-end p-5 relative`}>
+                    <div className="flex gap-2">
+                      {template.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs font-bold text-dark-green bg-cream/80 rounded-full px-3 py-1"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-dark-green mb-2">{template.name}</h3>
+                    <p className="text-sm text-brown/60 leading-relaxed mb-4">
+                      {template.description}
+                    </p>
+                    {["minimal", "startup", "creative", "academic", "developer", "retro"].includes(template.name.toLowerCase()) ? (
                       <Link
                         href={`/editor/${template.name.toLowerCase()}`}
                         className="text-sm font-semibold text-gold hover:text-brown transition-colors"
                       >
                         Preview &rarr;
                       </Link>
-                    ) : template.available ? (
-                      <span className="text-sm font-semibold text-gold hover:text-brown transition-colors">
-                        Preview &rarr;
-                      </span>
                     ) : (
                       <span className="text-sm font-semibold text-brown/40">
                         Coming Soon
                       </span>
                     )}
                   </div>
-                </CardWrapper>
-              );
-            })}
+                </div>
+              )
+            )}
           </div>
         </div>
       </section>
 
-      <CheckeredBorder />
-      <Marquee text="Build Bold, Get Hired." />
-      <CheckeredBorder />
-
-      {/* ===== CTA SECTION ===== */}
-      <section className="px-8 md:px-16 py-16 md:py-24 text-center">
-        <div className="max-w-2xl mx-auto">
-          <h2
-            className="text-3xl md:text-4xl font-bold text-dark-green mb-4"
-            style={{ fontFamily: "var(--font-playfair)" }}
-          >
-            Don&apos;t see what you need?
-          </h2>
-          <p className="text-brown/70 mb-8">
-            New templates are added regularly. Sign up to get notified when new designs drop.
-          </p>
-          <Link
-            href="/login"
-            className="px-8 py-3 bg-dark-green text-cream font-semibold rounded-full border-2 border-dark-green hover:bg-brown hover:border-brown transition-colors inline-block"
-          >
-            Get Started Free
-          </Link>
-        </div>
-      </section>
-
-      {/* ===== FOOTER ===== */}
-      <footer className="px-8 md:px-16 py-8 border-t border-dark-green/10">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brown/50">
-          <p>Faber — maker, craftsman.</p>
-          <div className="flex gap-6">
-            <Link href="/" className="hover:text-dark-green transition-colors">Home</Link>
-            <Link href="/templates" className="hover:text-dark-green transition-colors">Templates</Link>
-            <Link href="/login" className="hover:text-dark-green transition-colors">Login</Link>
-            <Link href="/dashboard" className="hover:text-dark-green transition-colors">Dashboard</Link>
-          </div>
-        </div>
-      </footer>
+      <h2
+        className="text-3xl md:text-4xl font-bold text-dark-green mb-4"
+        style={{ fontFamily: "var(--font-playfair)" }}
+      >
+        Don&apos;t see what you need?
+      </h2>
+      <p className="text-brown/70 mb-8">
+        New templates are added regularly. Sign up to get notified when new designs drop.
+      </p>
+      <Link
+        href="/login"
+        className="px-8 py-3 bg-dark-green text-cream font-semibold rounded-full border-2 border-dark-green hover:bg-brown hover:border-brown transition-colors inline-block"
+      >
+        Get Started Free
+      </Link>
     </div>
   );
 }
