@@ -283,6 +283,94 @@ export function getDefaultState(
       ],
     };
   }
+  if (template === "creative") {
+  return {
+    templateStyle: "creative",
+    sections: [
+      {
+        id: "section-hero",
+        type: "hero",
+        visible: true,
+        content: {
+          name: "Avery Luna",
+          title: "Designer • Developer • Dreamer",
+          avatarInitials: "AL",
+        },
+      },
+      {
+        id: "section-about",
+        type: "about",
+        visible: true,
+        content: {
+          bio: "I love creating playful, personality‑driven interfaces with bold colors, expressive layouts, and delightful interactions.",
+        },
+      },
+      {
+        id: "section-skills",
+        type: "skills",
+        visible: true,
+        content: {
+          heading: "Creative Skills",
+          skills: [
+            { id: "s1", name: "Creative Coding" },
+            { id: "s2", name: "UI Animation" },
+            { id: "s3", name: "Figma" },
+            { id: "s4", name: "React" },
+            { id: "s5", name: "TypeScript" },
+            { id: "s6", name: "Brand Design" },
+            { id: "s7", name: "Illustration" },
+          ],
+        },
+      },
+      {
+        id: "section-projects",
+        type: "projects",
+        visible: true,
+        content: {
+          heading: "Featured Projects",
+          projects: [
+            {
+              id: "p1",
+              title: "MoodPalette",
+              description:
+                "An AI-powered color generator that creates palettes based on your emotions.",
+              tags: ["React", "Next.js", "Design"],
+              gradient: "from-pink-400 to-orange-400",
+            },
+            {
+              id: "p2",
+              title: "DreamCanvas",
+              description:
+                "A collaborative drawing app with real-time brushes and generative textures.",
+              tags: ["WebSockets", "Canvas API", "Creative Coding"],
+              gradient: "from-purple-400 to-blue-400",
+            },
+            {
+              id: "p3",
+              title: "StoryBeats",
+              description:
+                "A narrative engine that turns your day into a visual comic strip.",
+              tags: ["AI", "Storytelling", "UX"],
+              gradient: "from-yellow-400 to-red-400",
+            },
+          ],
+        },
+      },
+      {
+        id: "section-contact",
+        type: "contact",
+        visible: true,
+        content: {
+          heading: "Let’s Create Something Fun",
+          subheading:
+            "Reach out anytime — I love collaborating on playful, expressive digital experiences.",
+          email: "avery@example.com",
+        },
+      },
+    ],
+  };
+}
+
   // Fallback to minimal if template is unknown
   return {
     templateStyle: "minimal",
