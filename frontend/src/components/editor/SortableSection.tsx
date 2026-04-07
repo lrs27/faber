@@ -20,6 +20,13 @@ import StartupSkills from "./sections/startup/StartupSkills";
 import StartupProjects from "./sections/startup/StartupProjects";
 import StartupContact from "./sections/startup/StartupContact";
 
+// Retro sections
+import RetroHero from "./sections/retro/RetroHero";
+import RetroAbout from "./sections/retro/RetroAbout";
+import RetroSkills from "./sections/retro/RetroSkills";
+import RetroProjects from "./sections/retro/RetroProjects";
+import RetroContact from "./sections/retro/RetroContact";
+
 interface Props {
   section: Section;
   templateStyle: TemplateStyle;

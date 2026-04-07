@@ -1,5 +1,5 @@
 export type SectionType = "hero" | "about" | "skills" | "projects" | "contact";
-export type TemplateStyle = "minimal" | "startup"| "creative";
+export type TemplateStyle = "minimal" | "startup"| "creative" | "retro";
 
 export interface HeroContent {
   name: string;
