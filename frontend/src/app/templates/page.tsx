@@ -24,7 +24,7 @@ const templates = [
   },
   {
     name: "Creative",
-    slug: null,
+    slug: "creative",
     description: "Bold colors, playful layout. Stand out from the crowd with personality.",
     gradient: "from-pink/30 to-orange/20",
     hoverBorder: "hover:border-pink",
