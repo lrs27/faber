@@ -431,6 +431,157 @@ export function getDefaultState(
     ],
   };
 }
+if (template === "retro") {
+  return {
+    templateStyle: template,
+    sections: [
+      {
+        id: "section-hero",
+        type: "hero",
+        visible: true,
+        style: {
+          background: {
+            type: "solid",
+            color: "#0f0f0f", // CRT black
+          },
+          typography: {
+            fontFamily: "var(--font-retro)",
+            fontWeight: 800,
+            color: "#39ff14", // neon green
+          },
+          spacing: {
+            paddingTop: "5rem",
+            paddingBottom: "5rem",
+          },
+        },
+        content: {
+          name: "Pixel Pioneer",
+          title: "Building Worlds • One Pixel at a Time",
+        },
+      },
+
+      {
+        id: "section-about",
+        type: "about",
+        visible: true,
+        style: {
+          background: { type: "solid", color: "#1a1a1a" },
+          typography: {
+            fontFamily: "var(--font-retro)",
+            color: "#ff4d6d", // cherry red
+          },
+          spacing: {
+            paddingTop: "3rem",
+            paddingBottom: "3rem",
+          },
+        },
+        content: {
+          bio: "Retro‑inspired developer crafting nostalgic, low‑fi, pixel‑perfect digital experiences with modern functionality. Inspired by classic arcade cabinets, Game Boy palettes, and early web aesthetics. I blend nostalgia with modern code to create playful, expressive interfaces.",
+        },
+      },
+
+      {
+        id: "section-skills",
+        type: "skills",
+        visible: true,
+        style: {
+          background: { type: "solid", color: "#111827" }, // deep retro navy
+          typography: {
+            fontFamily: "var(--font-retro)",
+            color: "#facc15", // Game Boy yellow
+          },
+          spacing: {
+            paddingTop: "3rem",
+            paddingBottom: "3rem",
+          },
+        },
+        content: {
+          heading: "Retro Skills",
+          skills: [
+            { id: "s1", name: "Pixel Art" },
+            { id: "s2", name: "8‑Bit Animation" },
+            { id: "s3", name: "Retro UI Design" },
+            { id: "s4", name: "JavaScript" },
+            { id: "s5", name: "TypeScript" },
+            { id: "s6", name: "React" },
+            { id: "s7", name: "Shader Effects" },
+          ],
+        },
+      },
+
+      {
+        id: "section-projects",
+        type: "projects",
+        visible: true,
+        style: {
+          background: { type: "solid", color: "#0d0d0d" },
+          typography: {
+            fontFamily: "var(--font-retro)",
+            color: "#00eaff", // mint teal
+          },
+          spacing: {
+            paddingTop: "3rem",
+            paddingBottom: "3rem",
+          },
+        },
+        content: {
+          heading: "Retro Projects",
+          projects: [
+            {
+              id: "p1",
+              title: "CRT Dashboard",
+              description:
+                "A glowing CRT‑style dashboard with scanlines, bloom effects, and pixel fonts.",
+              tags: ["CSS", "Retro UI", "Animation"],
+              gradient: "from-green-400 to-emerald-600",
+            },
+            {
+              id: "p2",
+              title: "PixelQuest",
+              description:
+                "A tiny RPG engine inspired by Game Boy classics with tilemaps and chiptune audio.",
+              tags: ["Canvas", "Game Dev", "Pixel Art"],
+              gradient: "from-yellow-400 to-orange-500",
+            },
+            {
+              id: "p3",
+              title: "ArcadeHub",
+              description:
+                "A collection of mini retro‑style web games built with modern JavaScript.",
+              tags: ["JavaScript", "Games", "Retro"],
+              gradient: "from-pink-500 to-red-500",
+            },
+          ],
+        },
+      },
+
+      {
+        id: "section-contact",
+        type: "contact",
+        visible: true,
+        style: {
+          background: { type: "solid", color: "#1f1f1f" },
+          typography: {
+            fontFamily: "var(--font-retro)",
+            color: "#39ff14",
+          },
+          spacing: {
+            paddingTop: "3rem",
+            paddingBottom: "3rem",
+          },
+        },
+        content: {
+          heading: "Insert Coin to Start",
+          subheading:
+            "Let’s build something nostalgic, pixel‑perfect, and full of character.",
+          email: "retro@example.com",
+        },
+      },
+    ],
+  };
+}
+
+
   
   // Fallback to minimal if template is unknown
   return {

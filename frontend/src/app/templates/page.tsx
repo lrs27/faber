@@ -51,7 +51,7 @@ const templates = [
   },
   {
     name: "Retro",
-    slug: null,
+    slug: "retro",
     description: "Nostalgic vibes, pixel-perfect. A throwback aesthetic with modern functionality.",
     gradient: "from-brown/20 to-gold/20",
     hoverBorder: "hover:border-brown",
@@ -138,7 +138,7 @@ export default function TemplatesPage() {
                     <p className="text-sm text-brown/60 leading-relaxed mb-4">
                       {template.description}
                     </p>
-                    {["minimal", "startup", "creative", "academic", "developer"].includes(template.name.toLowerCase()) ? (
+                    {["minimal", "startup", "creative", "academic", "developer", "retro"].includes(template.name.toLowerCase()) ? (
                       <Link
                         href={`/editor/${template.name.toLowerCase()}`}
                         className="text-sm font-semibold text-gold hover:text-brown transition-colors"
