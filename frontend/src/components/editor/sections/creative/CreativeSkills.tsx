@@ -24,10 +24,12 @@ export default function CreativeSkills({ section, dispatch }: Props) {
             content: { heading },
           })
         }
-        className="text-4xl font-bold mb-6 text-dark-green"
+        className="text-4xl font-bold mb-6 text-dark-green text-center"
       />
 
-      <div className="flex flex-wrap gap-3">
+      <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-orange-400 rounded-full mx-auto mb-10" />
+
+      <div className="flex flex-wrap gap-3 justify-center">
         {content.skills.map((skill) => (
           <InlineEditable
             key={skill.id}

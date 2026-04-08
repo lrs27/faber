@@ -24,14 +24,15 @@ export default function CreativeProjects({ section, dispatch }: Props) {
             content: { heading },
           })
         }
-        className="text-4xl font-bold mb-10 text-blue-800"
+        className="text-4xl font-bold mb-4 text-blue-800 text-center"
       />
+      <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-orange-400 rounded-full mx-auto mb-10" />
 
       <div className="grid md:grid-cols-2 gap-10">
         {content.projects.map((project) => (
           <div
             key={project.id}
-            className={`p-6 rounded-3xl ${project.gradient} text-white shadow-xl`}
+            className={`p-6 rounded-3xl ${project.gradient} text-black shadow-xl`}
           >
             <InlineEditable
               as="h3"

@@ -386,7 +386,7 @@ export function getDefaultState(
               description:
                 "A chaotic, joyful color generator that reacts to sound and movement.",
               tags: ["Creative Coding", "WebGL", "Motion"],
-              gradient: "from-fuchsia-500 to-orange-400",
+              gradient: " bg-gradient-to-br from-fuchsia-500 to-orange-400",
             },
             {
               id: "p2",
@@ -394,7 +394,7 @@ export function getDefaultState(
               description:
                 "A playful music visualizer where bubbles dance to your playlist.",
               tags: ["Audio", "Canvas", "Animation"],
-              gradient: "from-cyan-400 to-blue-500",
+              gradient: " bg-gradient-to-br from-cyan-400 to-blue-500",
             },
             {
               id: "p3",
@@ -402,7 +402,7 @@ export function getDefaultState(
               description:
                 "A generative art tool that turns your sketches into neon dreamscapes.",
               tags: ["AI", "Art", "UX"],
-              gradient: "from-lime-400 to-yellow-400",
+              gradient: " bg-gradient-to-br from-lime-400 to-yellow-400",
             },
           ],
         },
