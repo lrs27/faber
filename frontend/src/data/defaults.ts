@@ -1,7 +1,7 @@
 import type { EditorState } from "@/types/editor";
 
 export function getDefaultState(
-  template: "minimal" | "startup" | "academic" | "developer" | "creative"
+  template: "minimal" | "startup" | "academic" | "developer" | "creative" | "retro"
 ): EditorState {
   if (template === "minimal" || template === "startup") {
     return {
@@ -285,37 +285,76 @@ export function getDefaultState(
   }
   if (template === "creative") {
   return {
-    templateStyle: "creative",
+    templateStyle: template,
     sections: [
       {
         id: "section-hero",
         type: "hero",
         visible: true,
+        style: {
+          background: {
+            type: "gradient",
+            direction: "to-br",
+            from: "#ff9ecb",
+            to: "#8ae8fb",
+          },
+          typography: {
+            fontFamily: "var(--font-playfair)",
+            fontWeight: 800,
+            color: "#c1fc81",
+          },
+          spacing: {
+            paddingTop: "6rem",
+            paddingBottom: "6rem",
+          },
+        },
         content: {
-          name: "Avery Luna",
-          title: "Designer • Developer • Dreamer",
-          avatarInitials: "AL",
+          name: "Zara Bloom",
+          title: "Creative Coder • Visual Thinker • Color Enthusiast",
+          avatarInitials: "ZB",
         },
       },
       {
         id: "section-about",
         type: "about",
         visible: true,
+        style: {
+          background: { type: "solid", color: "#fadddd" },
+          typography: {
+            fontFamily: "var(--font-playfair)",
+            color: "#3b2f2f",
+          },
+          spacing: {
+            paddingTop: "4rem",
+            paddingBottom: "4rem",
+          },
+        },
         content: {
-          bio: "I love creating playful, personality‑driven interfaces with bold colors, expressive layouts, and delightful interactions.",
+          bio: "I create vibrant, expressive digital experiences that mix art, code, and storytelling. My work is bold, colorful, and full of personality — just like me. I love creating playful, personality‑driven interfaces with bold colors, expressive layouts, and delightful interactions.",
         },
       },
       {
         id: "section-skills",
         type: "skills",
         visible: true,
+        style: {
+          background: { type: "solid", color: "#c6eafd" },
+          typography: {
+            fontFamily: "var(--font-playfair)",
+            color: "#b91c1c",
+          },
+          spacing: {
+            paddingTop: "4rem",
+            paddingBottom: "4rem",
+          },
+        },
         content: {
           heading: "Creative Skills",
           skills: [
             { id: "s1", name: "Creative Coding" },
-            { id: "s2", name: "UI Animation" },
-            { id: "s3", name: "Figma" },
-            { id: "s4", name: "React" },
+            { id: "s2", name: "WebGL" },
+            { id: "s3", name: "Animation" },
+            { id: "s4", name: "Figma" },
             { id: "s5", name: "TypeScript" },
             { id: "s6", name: "Brand Design" },
             { id: "s7", name: "Illustration" },
@@ -326,32 +365,43 @@ export function getDefaultState(
         id: "section-projects",
         type: "projects",
         visible: true,
+        style: {
+          background: { type: "solid", color: "#fcfe97" },
+          typography: {
+            fontFamily: "var(--font-playfair)",
+            color: "#1e3a8a",
+          },
+          spacing: {
+            paddingTop: "4rem",
+            paddingBottom: "4rem",
+          },
+        },
         content: {
           heading: "Featured Projects",
           projects: [
             {
               id: "p1",
-              title: "MoodPalette",
+              title: "ColorBurst",
               description:
-                "An AI-powered color generator that creates palettes based on your emotions.",
-              tags: ["React", "Next.js", "Design"],
-              gradient: "from-pink-400 to-orange-400",
+                "A chaotic, joyful color generator that reacts to sound and movement.",
+              tags: ["Creative Coding", "WebGL", "Motion"],
+              gradient: "from-fuchsia-500 to-orange-400",
             },
             {
               id: "p2",
-              title: "DreamCanvas",
+              title: "BubbleBeats",
               description:
-                "A collaborative drawing app with real-time brushes and generative textures.",
-              tags: ["WebSockets", "Canvas API", "Creative Coding"],
-              gradient: "from-purple-400 to-blue-400",
+                "A playful music visualizer where bubbles dance to your playlist.",
+              tags: ["Audio", "Canvas", "Animation"],
+              gradient: "from-cyan-400 to-blue-500",
             },
             {
               id: "p3",
-              title: "StoryBeats",
+              title: "DreamDoodles",
               description:
-                "A narrative engine that turns your day into a visual comic strip.",
-              tags: ["AI", "Storytelling", "UX"],
-              gradient: "from-yellow-400 to-red-400",
+                "A generative art tool that turns your sketches into neon dreamscapes.",
+              tags: ["AI", "Art", "UX"],
+              gradient: "from-lime-400 to-yellow-400",
             },
           ],
         },
@@ -360,17 +410,28 @@ export function getDefaultState(
         id: "section-contact",
         type: "contact",
         visible: true,
+        style: {
+          background: { type: "solid", color: "#f79eca" },
+          typography: {
+            fontFamily: "var(--font-playfair)",
+            color: "#f389b3",
+          },
+          spacing: {
+            paddingTop: "4rem",
+            paddingBottom: "4rem",
+          },
+        },
         content: {
-          heading: "Let’s Create Something Fun",
+          heading: "Let’s Make Something Fun",
           subheading:
-            "Reach out anytime — I love collaborating on playful, expressive digital experiences.",
-          email: "avery@example.com",
+            "I love collaborating on playful, expressive, colorful digital experiences.",
+          email: "zara@example.com",
         },
       },
     ],
   };
 }
-
+  
   // Fallback to minimal if template is unknown
   return {
     templateStyle: "minimal",

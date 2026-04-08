@@ -7,14 +7,13 @@ import type { SkillsSection, EditorAction } from "@/types/editor";
 interface Props {
   section: SkillsSection;
   dispatch: Dispatch<EditorAction>;
-  theme: any;
 }
 
-export default function CreativeSkills({ section, dispatch, theme }: Props) {
+export default function CreativeSkills({ section, dispatch }: Props) {
   const { content } = section;
 
   return (
-    <section className="px-8 md:px-16 py-20">
+    <section className="px-8 py-20 max-w-6xl mx-auto">
       <InlineEditable
         as="h2"
         value={content.heading}
@@ -25,10 +24,10 @@ export default function CreativeSkills({ section, dispatch, theme }: Props) {
             content: { heading },
           })
         }
-        className={`text-4xl font-bold mb-10 text-center ${theme.accent}`}
+        className="text-4xl font-bold mb-6 text-dark-green"
       />
 
-      <div className="flex flex-wrap gap-4 justify-center">
+      <div className="flex flex-wrap gap-3">
         {content.skills.map((skill) => (
           <InlineEditable
             key={skill.id}
@@ -42,11 +41,7 @@ export default function CreativeSkills({ section, dispatch, theme }: Props) {
                 name,
               })
             }
-            className={`
-              px-5 py-2 rounded-full border text-sm font-medium
-              ${theme.cardStyle} ${theme.hoverBorder}
-              transition-all hover:scale-105
-            `}
+            className="px-4 py-2 bg-white rounded-full border border-orange-300 text-sm font-medium text-orange-600 hover:bg-orange-50 transition shadow-sm"
           />
         ))}
       </div>

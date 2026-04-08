@@ -7,14 +7,13 @@ import type { ProjectsSection, EditorAction } from "@/types/editor";
 interface Props {
   section: ProjectsSection;
   dispatch: Dispatch<EditorAction>;
-  theme: any;
 }
 
-export default function CreativeProjects({ section, dispatch, theme }: Props) {
+export default function CreativeProjects({ section, dispatch }: Props) {
   const { content } = section;
 
   return (
-    <section className="px-8 md:px-16 py-20">
+    <section className="px-8 py-20 max-w-6xl mx-auto">
       <InlineEditable
         as="h2"
         value={content.heading}
@@ -25,19 +24,14 @@ export default function CreativeProjects({ section, dispatch, theme }: Props) {
             content: { heading },
           })
         }
-        className={`text-4xl font-bold mb-10 text-center ${theme.accent}`}
+        className="text-4xl font-bold mb-10 text-blue-800"
       />
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-10">
         {content.projects.map((project) => (
           <div
             key={project.id}
-            draggable
-            className={`
-              p-6 rounded-2xl border cursor-grab active:cursor-grabbing
-              transition-all hover:scale-[1.03] hover:shadow-xl
-              ${theme.cardStyle} ${theme.hoverBorder}
-            `}
+            className={`p-6 rounded-3xl ${project.gradient} text-white shadow-xl`}
           >
             <InlineEditable
               as="h3"
@@ -50,7 +44,7 @@ export default function CreativeProjects({ section, dispatch, theme }: Props) {
                   updates: { title },
                 })
               }
-              className={`text-2xl font-semibold ${theme.accent}`}
+              className="text-3xl font-extrabold"
             />
 
             <InlineEditable
@@ -64,18 +58,28 @@ export default function CreativeProjects({ section, dispatch, theme }: Props) {
                   updates: { description },
                 })
               }
-              className="mt-2 opacity-80"
+              className="mt-3 opacity-90 text-lg"
               multiline
             />
 
-            <div className="flex flex-wrap gap-2 mt-4">
-              {project.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 text-xs rounded-full bg-white/60 border"
-                >
-                  {tag}
-                </span>
+            <div className="flex flex-wrap gap-2 mt-5">
+              {project.tags.map((tag, index) => (
+                <InlineEditable
+                  key={index}
+                  as="span"
+                  value={tag}
+                  onChange={(newTag) => {
+                    const updatedTags = [...project.tags];
+                    updatedTags[index] = newTag;
+                    dispatch({
+                      type: "UPDATE_PROJECT",
+                      sectionId: section.id,
+                      projectId: project.id,
+                      updates: { tags: updatedTags },
+                    });
+                  }}
+                  className="px-3 py-1 bg-white/30 rounded-full text-xs font-semibold"
+                />
               ))}
             </div>
           </div>

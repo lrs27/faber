@@ -7,34 +7,29 @@ import type { AboutSection, EditorAction } from "@/types/editor";
 interface Props {
   section: AboutSection;
   dispatch: Dispatch<EditorAction>;
-  theme: any; // Creative theme object
 }
 
-export default function CreativeAbout({ section, dispatch, theme }: Props) {
+export default function CreativeAbout({ section, dispatch }: Props) {
   const { content } = section;
 
   return (
-    <section
-      className={`
-        px-8 md:px-16 py-20 md:py-28 
-        bg-gradient-to-br ${theme.gradient}
-        rounded-3xl shadow-xl
-      `}
-    >
-      <div className="max-w-3xl mx-auto text-center">
-        <InlineEditable
-          as="h2"
-          value={content.bio || "About Me"}
-          onChange={(heading) =>
-            dispatch({
-              type: "UPDATE_CONTENT",
-              sectionId: section.id,
-              content: { heading },
-            })
-          }
-          className={`text-5xl font-extrabold mb-6 ${theme.accent}`}
-        />
+    <section className="relative px-8 py-20 max-w-4xl mx-auto">
+      {/* Background blobs */}
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute w-72 h-72 bg-pink-300/40 blur-[120px] rounded-full top-0 left-0 animate-pulse" />
+        <div className="absolute w-64 h-64 bg-yellow-300/40 blur-[120px] rounded-full bottom-10 right-10 animate-pulse" />
+      </div>
 
+      {/* Section Header */}
+      <h2
+        className="text-5xl font-extrabold mb-6 text-dark-green drop-shadow-[0_0_15px_rgba(0,0,0,0.1)]"
+        style={{ fontFamily: "var(--font-playfair)" }}
+      >
+        About Me
+      </h2>
+
+      {/* Editable Bio Box */}
+      <div className="bg-white/70 backdrop-blur-md border border-pink-200 rounded-3xl p-8 shadow-[0_8px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.12)] transition-shadow">
         <InlineEditable
           as="p"
           value={content.bio}
@@ -45,16 +40,13 @@ export default function CreativeAbout({ section, dispatch, theme }: Props) {
               content: { bio },
             })
           }
-          className="
-            text-lg leading-relaxed 
-            max-w-xl mx-auto 
-            text-black/70 
-            bg-white/40 backdrop-blur-md 
-            p-6 rounded-2xl border border-white/50
-          "
+          className="text-lg leading-relaxed text-brown/80"
           multiline
         />
       </div>
+
+      {/* Decorative underline */}
+      <div className="mt-6 w-32 h-2 bg-gradient-to-r from-pink-500 to-orange-400 rounded-full mx-auto" />
     </section>
   );
 }

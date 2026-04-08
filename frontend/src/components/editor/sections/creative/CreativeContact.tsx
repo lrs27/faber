@@ -7,14 +7,13 @@ import type { ContactSection, EditorAction } from "@/types/editor";
 interface Props {
   section: ContactSection;
   dispatch: Dispatch<EditorAction>;
-  theme: any;
 }
 
-export default function CreativeContact({ section, dispatch, theme }: Props) {
+export default function CreativeContact({ section, dispatch }: Props) {
   const { content } = section;
 
   return (
-    <section className="px-8 md:px-16 py-20">
+    <footer className="px-8 py-20 text-center bg-white/70 backdrop-blur-sm border-t border-pink-200">
       <InlineEditable
         as="h2"
         value={content.heading}
@@ -25,7 +24,7 @@ export default function CreativeContact({ section, dispatch, theme }: Props) {
             content: { heading },
           })
         }
-        className={`text-4xl font-bold mb-6 text-center ${theme.accent}`}
+        className="text-4xl font-bold text-dark-green"
       />
 
       <InlineEditable
@@ -38,18 +37,16 @@ export default function CreativeContact({ section, dispatch, theme }: Props) {
             content: { subheading },
           })
         }
-        className="text-center mb-6 opacity-80 max-w-xl mx-auto"
+        className="mt-4 text-brown/70 text-lg"
         multiline
       />
 
-      <div
-        className={`
-          max-w-xl mx-auto p-8 rounded-2xl border
-          ${theme.cardStyle}
-        `}
+      <a
+        href={`mailto:${content.email}`}
+        className="inline-block mt-6 px-10 py-3 bg-pink-500 text-white font-semibold rounded-full shadow-md hover:bg-pink-600 transition text-lg cursor-pointer"
       >
         <InlineEditable
-          as="p"
+          as="span"
           value={content.email}
           onChange={(email) =>
             dispatch({
@@ -58,9 +55,9 @@ export default function CreativeContact({ section, dispatch, theme }: Props) {
               content: { email },
             })
           }
-          className={`text-center font-semibold ${theme.accent}`}
+          className="text-white"
         />
-      </div>
-    </section>
+      </a>
+    </footer>
   );
 }
