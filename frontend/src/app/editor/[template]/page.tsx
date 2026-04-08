@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import EditorShell from "@/components/editor/EditorShell";
 import type { TemplateStyle } from "@/types/editor";
 
-const validTemplates: TemplateStyle[] = ["minimal", "startup", "creative", "academic", "developer"];
+const validTemplates: TemplateStyle[] = ["minimal", "startup", "creative", "academic", "developer", "retro"];
 
 export default async function EditorPage({
   params,
@@ -23,5 +23,6 @@ export function generateStaticParams() {
     { template: "creative" },
     { template: "academic" },
     { template: "developer" },
+    { template: "retro" },
   ];
 }

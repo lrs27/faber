@@ -1,5 +1,19 @@
 "use client";
 
+// Creative sections
+import CreativeHero from "./sections/creative/CreativeHero";
+import CreativeAbout from "./sections/creative/CreativeAbout";
+import CreativeSkills from "./sections/creative/CreativeSkills";
+import CreativeProjects from "./sections/creative/CreativeProjects";
+import CreativeContact from "./sections/creative/CreativeContact";
+
+// Retro sections
+import RetroHero from "./sections/retro/RetroHero";
+import RetroAbout from "./sections/retro/RetroAbout";
+import RetroSkills from "./sections/retro/RetroSkills";
+import RetroProjects from "./sections/retro/RetroProjects";
+import RetroContact from "./sections/retro/RetroContact";
+
 // Academic sections
 import AcademicHero from "./sections/academic/AcademicHero";
 import AcademicAbout from "./sections/academic/AcademicAbout";
@@ -114,7 +128,7 @@ export default function SortableSection({ section, templateStyle, dispatch, isSe
 }
 
 function renderSection(section: Section, style: TemplateStyle, dispatch: Dispatch<EditorAction>) {
-  const props = { section, dispatch };
+  const props = { section, dispatch, theme: style };
 
   if (style === "minimal") {
     switch (section.type) {
@@ -124,7 +138,7 @@ function renderSection(section: Section, style: TemplateStyle, dispatch: Dispatc
       case "projects": return <MinimalProjects {...props} section={section} />;
       case "contact": return <MinimalContact {...props} section={section} />;
     }
-  } else if (style === "startup" || style === "creative") {
+  } else if (style === "startup") {
     switch (section.type) {
       case "hero": return <StartupHero {...props} section={section} />;
       case "about": return <StartupAbout {...props} section={section} />;
@@ -147,6 +161,22 @@ function renderSection(section: Section, style: TemplateStyle, dispatch: Dispatc
       case "skills": return <DeveloperSkills {...props} section={section} />;
       case "projects": return <DeveloperProjects {...props} section={section} />;
       case "contact": return <DeveloperContact {...props} section={section} />;
+    }
+  } else if (style === "creative") {
+    switch (section.type) {
+      case "hero": return <CreativeHero {...props} section={section} />;
+      case "about": return <CreativeAbout {...props} section={section} />;
+      case "skills": return <CreativeSkills {...props} section={section} />;
+      case "projects": return <CreativeProjects {...props} section={section} />;
+      case "contact": return <CreativeContact {...props} section={section} />;
+    }
+  } else if (style === "retro") {
+    switch (section.type) {
+    case "hero": return <RetroHero {...props} section={section} />;
+    case "about": return <RetroAbout {...props} section={section} />;
+    case "skills": return <RetroSkills {...props} section={section} />;
+    case "projects": return <RetroProjects {...props} section={section} />;
+    case "contact": return <RetroContact {...props} section={section} />;
     }
   }
 }

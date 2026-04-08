@@ -2,6 +2,7 @@ import type { EditorState } from "@/types/editor";
 
 export function getDefaultState(
   template: "minimal" | "startup" | "academic" | "developer" | "creative" | "retro"
+
 ): EditorState {
   if (template === "minimal" || template === "startup") {
     return {
@@ -457,6 +458,7 @@ if (template === "retro") {
         content: {
           name: "Pixel Pioneer",
           title: "Building Worlds • One Pixel at a Time",
+          avatarInitials: "PP",
         },
       },
 
