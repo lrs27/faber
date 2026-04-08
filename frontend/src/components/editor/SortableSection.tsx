@@ -170,6 +170,14 @@ function renderSection(section: Section, style: TemplateStyle, dispatch: Dispatc
       case "projects": return <CreativeProjects {...props} section={section} />;
       case "contact": return <CreativeContact {...props} section={section} />;
     }
+  } else if (style === "retro") {
+    switch (section.type) {
+      case "hero": return <RetroHero {...props} section={section} />;
+      case "about": return <RetroAbout {...props} section={section} />;
+      case "skills": return <RetroSkills {...props} section={section} />;
+      case "projects": return <RetroProjects {...props} section={section} />;
+      case "contact": return <RetroContact {...props} section={section} />;
+    }
   }
 }
 

@@ -1,28 +1,64 @@
 "use client";
 
-interface RetroHeroProps {
-  name: string;
-  tagline: string;
-  bio: string;
+import { Dispatch } from "react";
+import InlineEditable from "../../InlineEditable";
+import type { HeroSection, EditorAction } from "@/types/editor";
+import { sectionStyleToCSS } from "@/lib/styleUtils";
+
+interface Props {
+  section: HeroSection;
+  dispatch: Dispatch<EditorAction>;
 }
 
-export default function RetroHero({ name, tagline, bio }: RetroHeroProps) {
+export default function RetroHero({ section, dispatch }: Props) {
+  const { content, style } = section;
+
   return (
-    <header className="px-8 py-24 text-center bg-[#0f0f0f] text-[#39ff14] relative overflow-hidden font-retro">
-      {/* CRT Scanlines */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.15] bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:100%_3px]" />
+    <section
+      style={sectionStyleToCSS(style)}
+      className="px-8 py-24 text-center relative bg-[#0f0f0f] text-[#39ff14] font-retro"
+    >
+      {/* Avatar */}
+      <div className="mx-auto w-32 h-32 bg-[#39ff14] text-black flex items-center justify-center border-4 border-[#1f1f1f] shadow-[4px_4px_0_#39ff14]">
+        <InlineEditable
+          as="span"
+          value={content.avatarInitials}
+          onChange={(avatarInitials) =>
+            dispatch({
+              type: "UPDATE_CONTENT",
+              sectionId: section.id,
+              content: { avatarInitials },
+            })
+          }
+          className="text-4xl font-extrabold tracking-widest"
+        />
+      </div>
 
-      <h1 className="text-6xl font-extrabold tracking-widest drop-shadow-[0_0_10px_#39ff14]">
-        {name}
-      </h1>
+      <InlineEditable
+        as="h1"
+        value={content.name}
+        onChange={(name) =>
+          dispatch({
+            type: "UPDATE_CONTENT",
+            sectionId: section.id,
+            content: { name },
+          })
+        }
+        className="text-5xl font-extrabold mt-6 tracking-widest"
+      />
 
-      <p className="text-2xl mt-4 text-[#00ffea] drop-shadow-[0_0_6px_#00ffea]">
-        {tagline}
-      </p>
-
-      <p className="max-w-2xl mx-auto mt-6 text-[#d1ffd1] leading-relaxed text-lg">
-        {bio}
-      </p>
-    </header>
+      <InlineEditable
+        as="p"
+        value={content.title}
+        onChange={(title) =>
+          dispatch({
+            type: "UPDATE_CONTENT",
+            sectionId: section.id,
+            content: { title },
+          })
+        }
+        className="text-xl text-[#00eaff] mt-2 font-bold"
+      />
+    </section>
   );
 }

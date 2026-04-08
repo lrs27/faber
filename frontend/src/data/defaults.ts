@@ -432,7 +432,7 @@ export function getDefaultState(
     ],
   };
 }
-if (template === "retro") {
+  if (template === "retro") {
   return {
     templateStyle: template,
     sections: [
@@ -535,7 +535,7 @@ if (template === "retro") {
               description:
                 "A glowing CRT‑style dashboard with scanlines, bloom effects, and pixel fonts.",
               tags: ["CSS", "Retro UI", "Animation"],
-              gradient: "from-green-400 to-emerald-600",
+              gradient: "bg-gradient-to-br from-green-400 to-emerald-600",
             },
             {
               id: "p2",
@@ -543,7 +543,7 @@ if (template === "retro") {
               description:
                 "A tiny RPG engine inspired by Game Boy classics with tilemaps and chiptune audio.",
               tags: ["Canvas", "Game Dev", "Pixel Art"],
-              gradient: "from-yellow-400 to-orange-500",
+              gradient: "bg-gradient-to-br from-yellow-400 to-orange-500",
             },
             {
               id: "p3",
@@ -551,7 +551,7 @@ if (template === "retro") {
               description:
                 "A collection of mini retro‑style web games built with modern JavaScript.",
               tags: ["JavaScript", "Games", "Retro"],
-              gradient: "from-pink-500 to-red-500",
+              gradient: "bg-gradient-to-br from-pink-500 to-red-500",
             },
           ],
         },
@@ -582,9 +582,6 @@ if (template === "retro") {
     ],
   };
 }
-
-
-  
   // Fallback to minimal if template is unknown
   return {
     templateStyle: "minimal",
