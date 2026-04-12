@@ -33,7 +33,7 @@ export default function EvaluationDebugForm() {
   return (
     <div style={{ maxWidth: 600, margin: "2rem auto", padding: "0 1rem" }}>
       <h2>Gemini Portfolio Evaluation Debug Form</h2>
-      <p style={{ color: "#666", marginBottom: "1rem" }}>Score: 0-70 based on skills, projects, work experience, and visual elements</p>
+      <p style={{ color: "#666", marginBottom: "1rem" }}>Score: 0-100 based on skills, projects, work experience, and visual elements</p>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <label>
           Work Experience (job titles, years, descriptions):

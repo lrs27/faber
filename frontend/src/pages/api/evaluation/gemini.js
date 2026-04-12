@@ -14,20 +14,20 @@ export default async function handler(req, res) {
     const genAI = new GoogleGenerativeAI(GOOGLE_GENAI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    // Compose prompt for numerical scoring out of 70
+    // Compose prompt for numerical scoring out of 100
     // Research-based scoring weights prioritize demonstrable ability and relevant skills
     const prompt = `You are a professional senior technical recruiter and portfolio evaluator with extensive industry experience. Your role is to provide honest, constructive assessments that reflect current market standards while maintaining a respectful and encouraging tone.
 
 EVALUATION STANDARDS:
-- Typical portfolio scores range from 35-45/70 (50-65%)
-- Strong portfolios may reach 50-60/70 (70-85%)
-- Scores above 60/70 are reserved for truly exceptional work
+- Typical portfolio scores range from 50-65/100 (50-65%)
+- Strong portfolios may reach 70-85/100 (70-85%)
+- Scores above 85/100 are reserved for truly exceptional work
 - Insufficient detail should result in conservative scoring
 - All assessments should be compared against current 2026 market standards
 
 Scoring Criteria:
 
-1. Skills & Technical Competency (0-25 points) - HIGHEST PRIORITY
+1. Skills & Technical Competency (0-36 points) - HIGHEST PRIORITY
    
    HIGHLY VALUED IN 2026:
    - AI/ML: LLMs, RAG, vector databases, prompt engineering
@@ -40,9 +40,9 @@ Scoring Criteria:
    - Generic skill listings without demonstrated depth
    - Limited or absent cloud/DevOps capabilities
    
-   Scoring guidance: 18-22pts = exceptional, 11-17pts = competitive, 6-10pts = foundational, 0-5pts = needs development
+   Scoring guidance: 26-32pts = exceptional, 16-25pts = competitive, 9-15pts = foundational, 0-8pts = needs development
 
-2. Projects & Work Samples (0-25 points) - HIGHEST PRIORITY
+2. Projects & Work Samples (0-36 points) - HIGHEST PRIORITY
    
    STRONG INDICATORS:
    - Detailed descriptions with specific technologies and outcomes
@@ -54,22 +54,22 @@ Scoring Criteria:
    - Generic descriptions lacking technical detail
    - Tutorial-style projects without original contributions
    
-   Scoring guidance: 18-22pts = impressive production work, 11-17pts = solid implementations, 6-10pts = foundational projects, 0-5pts = limited demonstration
+   Scoring guidance: 26-32pts = impressive production work, 16-25pts = solid implementations, 9-15pts = foundational projects, 0-8pts = limited demonstration
 
-3. Work Experience & Background (0-17 points)
+3. Work Experience & Background (0-24 points)
    
    EVALUATION FACTORS:
    - Career progression and demonstrated growth
    - Relevance to current market demands (2024-2026 weighted heavily)
    - Specific accomplishments and responsibilities
    
-   Scoring guidance: 14-17pts = senior level with clear progression, 8-13pts = solid mid-level, 4-7pts = early career, 0-3pts = limited professional experience
+   Scoring guidance: 20-24pts = senior level with clear progression, 12-19pts = solid mid-level, 6-11pts = early career, 0-5pts = limited professional experience
 
-4. Visual Presentation & Polish (0-3 points)
+4. Visual Presentation & Polish (0-4 points)
    - Professional visual elements that enhance understanding
    - Interactive demonstrations or compelling case studies
    
-   Scoring guidance: 3pts = exceptional, 2pts = professional, 1pt = basic, 0pts = none
+   Scoring guidance: 4pts = exceptional, 3pts = professional, 2pts = good, 1pt = basic, 0pts = none
 
 ASSESSMENT GUIDELINES:
 - When details are limited or unclear, score conservatively while noting what additional information would strengthen the portfolio
@@ -84,12 +84,12 @@ Visual Elements: ${visualElements || 'Not provided'}
 
 Provide your response in the following JSON format:
 {
-  "score": <number between 0-70>,
+  "score": <number between 0-100>,
   "breakdown": {
-    "skills": <score out of 25>,
-    "projects": <score out of 25>,
-    "workExperience": <score out of 17>,
-    "visualElements": <score out of 3>
+    "skills": <score out of 36>,
+    "projects": <score out of 36>,
+    "workExperience": <score out of 24>,
+    "visualElements": <score out of 4>
   },
   "reasoning": "2-4 sentences maximum. State the overall level (e.g., 'strong mid-level', 'developing junior'), highlight 1-2 key strengths, and note the single most important area for improvement."
 }`;
