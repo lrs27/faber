@@ -7,8 +7,6 @@ import CheckeredBorder from "@/components/CheckeredBorder";
 import Marquee from "@/components/Marquee";
 import Link from "next/link";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-
 interface User {
   userId: string;
   email: string;
@@ -88,7 +86,7 @@ export default function DashboardPage() {
     // Fetch dashboard stats
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/dashboard-stats`, {
+        const response = await fetch('/api/auth/dashboard-stats', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -134,4 +134,6 @@ export type EditorAction =
   | { type: "UPDATE_PROJECT"; sectionId: string; projectId: string; updates: Partial<Project> }
   | { type: "RESET"; defaultState: EditorState }
   | { type: "UPDATE_STYLE"; sectionId: string; style: Partial<SectionStyle> }
-  | { type: "DUPLICATE_SECTION"; sectionId: string };
+  | { type: "DUPLICATE_SECTION"; sectionId: string }
+  | { type: "UNDO" }
+  | { type: "REDO" };

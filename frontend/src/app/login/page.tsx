@@ -5,10 +5,8 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import CheckeredBorder from "@/components/CheckeredBorder";
 import Marquee from "@/components/Marquee";
-import GoogleAuthButton from "@/components/GoogleAuthButton";
+import GoogleAuthWrapper from "@/components/GoogleAuthWrapper";
 import Link from "next/link";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,7 +34,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch('/api/auth/login', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -155,7 +153,7 @@ export default function LoginPage() {
               </div>
 
               <div className="mt-6">
-                <GoogleAuthButton 
+                <GoogleAuthWrapper 
                   mode="login" 
                   onError={(err) => setError(err)} 
                 />

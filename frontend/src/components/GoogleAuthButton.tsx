@@ -4,8 +4,6 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-
 interface GoogleAuthButtonProps {
   mode: "login" | "signup";
   onError?: (error: string) => void;
@@ -40,7 +38,7 @@ export default function GoogleAuthButton({ mode, onError }: GoogleAuthButtonProp
       const userInfo: GoogleUserInfo = await userInfoResponse.json();
 
       // Send to our backend
-      const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
+      const response = await fetch('/api/auth/google', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

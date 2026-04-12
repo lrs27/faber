@@ -7,10 +7,10 @@ export default function EvaluationDebugForm() {
   const [skills, setSkills] = useState("");
   const [projects, setProjects] = useState("");
   const [visualElements, setVisualElements] = useState("");
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
@@ -23,7 +23,7 @@ export default function EvaluationDebugForm() {
       const data = await res.json();
       console.log("API Response:", data);
       setResult(data);
-    } catch (err) {
+    } catch (err: any) {
       setResult({ error: err.message });
     } finally {
       setLoading(false);
