@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import EditorShell from "@/components/editor/EditorShell";
 import type { TemplateStyle } from "@/types/editor";
 
@@ -13,7 +14,18 @@ export default async function EditorPage({
   if (!validTemplates.includes(template as TemplateStyle)) {
     notFound();
   }
-  return <EditorShell templateStyle={template as TemplateStyle} />;
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center bg-cream">
+        <div className="text-center">
+          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-gold border-r-transparent"></div>
+          <p className="mt-4 text-brown/60">Loading editor...</p>
+        </div>
+      </div>
+    }>
+      <EditorShell templateStyle={template as TemplateStyle} />
+    </Suspense>
+  );
 }
 
 export function generateStaticParams() {

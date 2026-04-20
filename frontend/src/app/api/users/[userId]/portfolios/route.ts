@@ -152,7 +152,7 @@ export async function POST(request: NextRequest, { params }: Params) {
                 content: JSON.stringify(section.content),
                 order: index,
                 isVisible: section.visible ?? true,
-                settings: section.style ? JSON.stringify(section.style) : null,
+                settings: section.style ? JSON.stringify(section.style) : undefined,
               },
             })
           )

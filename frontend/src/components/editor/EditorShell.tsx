@@ -186,7 +186,7 @@ interface Props {
 export default function EditorShell({ templateStyle }: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const portfolioId = searchParams.get('portfolioId');
+  const portfolioId = searchParams?.get('portfolioId');
   
   const defaultState = getDefaultState(templateStyle);
   const { state, dispatch, canUndo, canRedo } = useUndoReducer(

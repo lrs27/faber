@@ -162,7 +162,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
               content: JSON.stringify(section.content),
               order: section.order ?? index,
               isVisible: section.visible ?? true,
-              settings: section.style ? JSON.stringify(section.style) : null,
+              settings: section.style ? JSON.stringify(section.style) : undefined,
             })),
           });
         }
