@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
+import CheckeredBorder from "@/components/CheckeredBorder";
+import Marquee from "@/components/Marquee";
 import type { TemplateStyle } from "@/types/editor";
 import { sectionStyleToCSS } from "@/lib/styleUtils";
 
@@ -48,82 +50,55 @@ import StartupSkills from "@/components/editor/sections/startup/StartupSkills";
 import StartupProjects from "@/components/editor/sections/startup/StartupProjects";
 import StartupContact from "@/components/editor/sections/startup/StartupContact";
 
-interface Portfolio {
+interface PortfolioData {
   portfolioId: string;
   title: string;
   slug: string;
   templateId: string;
+  userId: string;
   sections: Array<{
     sectionId: string;
     type: string;
     content: any;
-    settings?: any;
     order: number;
-    isVisible: boolean;
   }>;
   user: {
     displayName: string;
     email: string;
+    username?: string;
+    profileImageUrl?: string;
   };
 }
 
-export default function PortfolioPage() {
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
+export default function PortfolioPreviewPage() {
+  const params = useParams();
+  const slug = params?.slug as string;
+  
+  const [portfolio, setPortfolio] = useState<PortfolioData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        console.log('[Portfolio Page] Fetching portfolios...');
-        const token = localStorage.getItem('token');
-        const userStr = localStorage.getItem('user');
+        console.log('[Portfolio Preview] Fetching portfolio with slug:', slug);
+        const response = await fetch(`/api/portfolios/slug/${slug}`);
         
-        if (!token || !userStr) {
-          setError('Please log in to view your portfolio');
+        console.log('[Portfolio Preview] Response status:', response.status);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError('Portfolio not found');
+          } else {
+            setError('Failed to load portfolio');
+          }
           setLoading(false);
           return;
-        }
-
-        const user = JSON.parse(userStr);
-        const response = await fetch(`/api/users/${user.userId}/portfolios`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch portfolios');
         }
 
         const data = await response.json();
-        const portfolios = Array.isArray(data) ? data : data.portfolios || [];
-        
-        console.log('[Portfolio Page] Fetched portfolios:', portfolios.length);
-        console.log('[Portfolio Page] Portfolio details:', portfolios.map((p: any) => ({ 
-          title: p.title, 
-          isMainPortfolio: p.isMainPortfolio,
-          createdAt: p.createdAt 
-        })));
-
-        if (portfolios.length === 0) {
-          setError('No portfolios found. Create one in the Templates page!');
-          setLoading(false);
-          return;
-        }
-
-        // Find main portfolio or use the first created one
-        const mainPortfolio = portfolios.find((p: any) => p.isMainPortfolio);
-        console.log('[Portfolio Page] Main portfolio found:', mainPortfolio?.title || 'none');
-        
-        const selectedPortfolio = mainPortfolio || portfolios.sort((a: any, b: any) => 
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        )[0];
-        
-        console.log('[Portfolio Page] Selected portfolio:', selectedPortfolio.title);
-
-        setPortfolio(selectedPortfolio);
+        console.log('[Portfolio Preview] Portfolio data:', data);
+        setPortfolio(data);
       } catch (err) {
         console.error('Error fetching portfolio:', err);
         setError('Failed to load portfolio');
@@ -132,19 +107,10 @@ export default function PortfolioPage() {
       }
     };
 
-    fetchPortfolio();
-    
-    // Refetch when page becomes visible
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('[Portfolio Page] Page visible, refreshing...');
-        setRefreshTrigger(prev => prev + 1);
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [refreshTrigger]);
+    if (slug) {
+      fetchPortfolio();
+    }
+  }, [slug]);
 
   if (loading) {
     return (
@@ -153,7 +119,7 @@ export default function PortfolioPage() {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-gold border-r-transparent"></div>
-            <p className="mt-4 text-brown/60">Loading your portfolio...</p>
+            <p className="mt-4 text-brown/60">Loading portfolio...</p>
           </div>
         </div>
       </div>
@@ -166,42 +132,23 @@ export default function PortfolioPage() {
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md mx-auto px-4">
-            <h1 className="text-4xl font-bold text-dark-green mb-4">No Portfolio Yet</h1>
-            <p className="text-brown/60 mb-6">{error || 'Create your first portfolio to get started'}</p>
-            <Link
-              href="/templates"
-              className="inline-block px-6 py-3 bg-dark-green text-cream font-semibold rounded-full hover:bg-brown transition-colors"
-            >
-              Create Portfolio
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Safety check - ensure portfolio has sections
-  if (!portfolio.sections || portfolio.sections.length === 0) {
-    return (
-      <div className="min-h-screen flex flex-col bg-cream">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto px-4">
-            <h1 className="text-4xl font-bold text-dark-green mb-4">Empty Portfolio</h1>
-            <p className="text-brown/60 mb-6">This portfolio has no sections yet.</p>
-            <Link
+            <h1 className="text-4xl font-bold text-dark-green mb-4">Portfolio Not Found</h1>
+            <p className="text-brown/60 mb-6">
+              {error || `No portfolio found with slug: ${slug}`}
+            </p>
+            <a
               href="/dashboard"
               className="inline-block px-6 py-3 bg-dark-green text-cream font-semibold rounded-full hover:bg-brown transition-colors"
             >
               Go to Dashboard
-            </Link>
+            </a>
           </div>
         </div>
       </div>
     );
   }
 
-  // Render portfolio sections using template-specific components
+  // Render portfolio sections
   const renderSection = (section: any, templateStyle: TemplateStyle) => {
     // No-op dispatch for preview mode (sections are read-only)
     const dispatch = () => {};
@@ -228,6 +175,7 @@ export default function PortfolioPage() {
   };
   
   const renderTemplateSection = (section: any, templateStyle: TemplateStyle, props: any) => {
+
     if (templateStyle === "minimal") {
       switch (section.type) {
         case "hero": return <MinimalHero key={section.id} {...props} />;
@@ -286,9 +234,7 @@ export default function PortfolioPage() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <Navbar />
       {portfolio.sections
-        .filter(s => s.isVisible !== false)
         .sort((a, b) => a.order - b.order)
         .map((section) => renderSection(section, templateStyle))}
     </div>

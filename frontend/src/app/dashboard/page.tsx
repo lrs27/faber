@@ -28,6 +28,12 @@ interface Portfolio {
   score: number;
   viewCount: number;
   isPublished: boolean;
+  feedback?: {
+    reasoning?: string;
+    strengths?: string[];
+    suggestions?: string[];
+    rawResponse?: string;
+  };
 }
 
 interface Activity {
@@ -66,6 +72,8 @@ export default function DashboardPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [evaluatingId, setEvaluatingId] = useState<string | null>(null);
+  const [hoveredPortfolio, setHoveredPortfolio] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -76,27 +84,75 @@ export default function DashboardPage() {
       return;
     }
 
+    let currentUser: User;
     try {
-      setUser(JSON.parse(storedUser));
+      currentUser = JSON.parse(storedUser);
+      setUser(currentUser);
     } catch {
       router.push("/login");
       return;
     }
 
-    // Fetch dashboard stats
+    // Fetch dashboard data
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('/api/auth/dashboard-stats', {
+        // Fetch portfolios from the correct endpoint
+        const response = await fetch(`/api/users/${currentUser.userId}/portfolios`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         if (response.ok) {
-          const data = await response.json();
-          setStats(data.stats);
-          setPortfolios(data.portfolios);
-          setRecentActivity(data.recentActivity || []);
+          const portfoliosData = await response.json();
+          const mappedPortfolios = portfoliosData.map((p: any) => {
+            const latestFeedback = p.aiFeedback?.[0];
+            let feedbackData = null;
+            
+            if (latestFeedback) {
+              // Try to parse the raw response to get full feedback
+              try {
+                const jsonMatch = latestFeedback.rawResponse?.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                  const parsedFeedback = JSON.parse(jsonMatch[0]);
+                  feedbackData = {
+                    reasoning: parsedFeedback.reasoning,
+                    strengths: parsedFeedback.strengths || latestFeedback.strengths,
+                    suggestions: parsedFeedback.suggestions || latestFeedback.suggestions,
+                    rawResponse: latestFeedback.rawResponse,
+                  };
+                }
+              } catch (e) {
+                console.error('Failed to parse feedback:', e);
+              }
+            }
+
+            return {
+              portfolioId: p.portfolioId,
+              name: p.title,
+              slug: p.slug,
+              template: p.templateId || 'unknown',
+              lastEdited: p.updatedAt,
+              score: p.aiScore || 0,
+              viewCount: p.viewCount || 0,
+              isPublished: p.isPublished || false,
+              feedback: feedbackData,
+            };
+          });
+
+          setPortfolios(mappedPortfolios);
+          
+          // Calculate stats
+          const evaluatedPortfolios = mappedPortfolios.filter((p: any) => p.score > 0);
+          setStats({
+            portfolioCount: mappedPortfolios.length,
+            avgAiScore: evaluatedPortfolios.length > 0 
+              ? Math.round(evaluatedPortfolios.reduce((sum: number, p: any) => sum + p.score, 0) / evaluatedPortfolios.length)
+              : 0,
+            totalViews: mappedPortfolios.reduce((sum: number, p: any) => sum + p.viewCount, 0),
+          });
+        } else {
+          console.error('Failed to fetch portfolios:', response.status);
         }
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
@@ -107,6 +163,89 @@ export default function DashboardPage() {
 
     fetchDashboardData();
   }, [router]);
+
+  const handleEvaluate = async (portfolioId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    setEvaluatingId(portfolioId);
+    try {
+      const response = await fetch(`/api/portfolios/${portfolioId}/evaluate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Refresh portfolio data
+        const currentUser = user;
+        if (currentUser) {
+          const portfoliosResponse = await fetch(`/api/users/${currentUser.userId}/portfolios`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (portfoliosResponse.ok) {
+            const portfoliosData = await portfoliosResponse.json();
+            const mappedPortfolios = portfoliosData.map((p: any) => {
+              const latestFeedback = p.aiFeedback?.[0];
+              let feedbackData = null;
+              
+              if (latestFeedback) {
+                try {
+                  const jsonMatch = latestFeedback.rawResponse?.match(/\{[\s\S]*\}/);
+                  if (jsonMatch) {
+                    const parsedFeedback = JSON.parse(jsonMatch[0]);
+                    feedbackData = {
+                      reasoning: parsedFeedback.reasoning,
+                      strengths: parsedFeedback.strengths || latestFeedback.strengths,
+                      suggestions: parsedFeedback.suggestions || latestFeedback.suggestions,
+                      rawResponse: latestFeedback.rawResponse,
+                    };
+                  }
+                } catch (e) {
+                  console.error('Failed to parse feedback:', e);
+                }
+              }
+
+              return {
+                portfolioId: p.portfolioId,
+                name: p.title,
+                slug: p.slug,
+                template: p.templateId || 'unknown',
+                lastEdited: p.updatedAt,
+                score: p.aiScore || 0,
+                viewCount: p.viewCount || 0,
+                isPublished: p.isPublished || false,
+                feedback: feedbackData,
+              };
+            });
+
+            setPortfolios(mappedPortfolios);
+            
+            // Update stats
+            const evaluatedPortfolios = mappedPortfolios.filter((p: any) => p.score > 0);
+            setStats({
+              portfolioCount: mappedPortfolios.length,
+              avgAiScore: evaluatedPortfolios.length > 0 
+                ? Math.round(evaluatedPortfolios.reduce((sum: number, p: any) => sum + p.score, 0) / evaluatedPortfolios.length)
+                : 0,
+              totalViews: mappedPortfolios.reduce((sum: number, p: any) => sum + p.viewCount, 0),
+            });
+          }
+        }
+        alert('Portfolio evaluated successfully!');
+      } else {
+        const data = await response.json();
+        alert(`Evaluation failed: ${data.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Evaluation error:', error);
+      alert('Failed to evaluate portfolio');
+    } finally {
+      setEvaluatingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -130,7 +269,7 @@ export default function DashboardPage() {
             >
               Dashboard
             </h1>
-            <p className="text-brown/60 mt-1">Welcome back, {user?.displayName || "User"}. Here&apos;s your workspace.</p>
+            <p className="text-brown/60 mt-1">Welcome back, {user?.displayName?.split(' ')[0] || "User"}.</p>
           </div>
           <Link
             href="/templates"
@@ -186,28 +325,101 @@ export default function DashboardPage() {
               {portfolios.map((portfolio, index) => (
                 <div
                   key={portfolio.portfolioId}
-                  className="group bg-white rounded-2xl border-2 border-dark-green/10 overflow-hidden hover:border-gold transition-all hover:shadow-[6px_6px_0_rgba(0,0,0,0.08)] cursor-pointer"
+                  className="group bg-white rounded-2xl border-2 border-dark-green/10 overflow-hidden hover:border-gold transition-all hover:shadow-[6px_6px_0_rgba(0,0,0,0.08)] relative"
                 >
                   <div className={`h-36 bg-gradient-to-br ${gradients[index % gradients.length]} relative`}>
-                    <div className="absolute top-4 right-4 bg-gold rounded-full px-3 py-1.5 border-2 border-gold/80 shadow-sm">
-                      <span className="text-xs font-bold text-dark-green">
-                        AI Score: {portfolio.score}
-                      </span>
+                    {/* AI Score Badge with Hover Modal */}
+                    <div 
+                      className="absolute top-4 right-4 cursor-help"
+                      onMouseEnter={() => setHoveredPortfolio(portfolio.portfolioId)}
+                      onMouseLeave={() => setHoveredPortfolio(null)}
+                    >
+                      <div className="bg-gold rounded-full px-3 py-1.5 border-2 border-gold/80 shadow-sm">
+                        <span className="text-xs font-bold text-dark-green">
+                          {portfolio.score > 0 ? portfolio.score : 'Not scored'}
+                        </span>
+                      </div>
+                      
+                      {/* Hover Modal */}
+                      {hoveredPortfolio === portfolio.portfolioId && portfolio.feedback && (
+                        <div className="absolute top-full right-0 mt-2 w-80 max-h-96 bg-white rounded-xl border-2 border-dark-green/20 shadow-[8px_8px_0_rgba(0,0,0,0.1)] z-50 animate-fadeIn overflow-hidden">
+                          <div className="p-4 max-h-96 overflow-y-auto">
+                            <h4 className="text-sm font-bold text-dark-green mb-2">AI Evaluation</h4>
+                            <div className="text-xs text-brown/80 space-y-2">
+                              <div>
+                                <strong className="text-dark-green">Reasoning:</strong>
+                                <p className="mt-1">{portfolio.feedback.reasoning}</p>
+                              </div>
+                              {portfolio.feedback.strengths && portfolio.feedback.strengths.length > 0 && (
+                                <div>
+                                  <strong className="text-green">Strengths:</strong>
+                                  <ul className="mt-1 list-disc list-inside">
+                                    {portfolio.feedback.strengths.map((s, i) => (
+                                      <li key={i}>{s}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {portfolio.feedback.suggestions && portfolio.feedback.suggestions.length > 0 && (
+                                <div>
+                                  <strong className="text-orange">Suggestions:</strong>
+                                  <ul className="mt-1 list-disc list-inside">
+                                    {portfolio.feedback.suggestions.map((s, i) => (
+                                      <li key={i}>{s}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                    
+                    {portfolio.isPublished && (
+                      <div className="absolute top-4 left-4 bg-green/90 rounded-full px-3 py-1.5 border-2 border-green shadow-sm">
+                        <span className="text-xs font-bold text-white">Published</span>
+                      </div>
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className="text-lg font-bold text-dark-green">{portfolio.name}</h3>
                     <p className="text-sm text-brown/50 mt-1">
                       {portfolio.template} template &middot; Edited {formatTimeAgo(portfolio.lastEdited)}
                     </p>
-                    <div className="mt-4 flex gap-3">
-                      <button className="px-4 py-2 bg-dark-green text-cream text-xs font-semibold rounded-full hover:bg-brown transition-colors">
+                    <p className="text-xs text-brown/40 mt-1">
+                      {portfolio.viewCount} {portfolio.viewCount === 1 ? 'view' : 'views'}
+                    </p>
+                    <div className="mt-4 flex gap-2 flex-wrap">
+                      <Link
+                        href={`/editor/${portfolio.template}?portfolioId=${portfolio.portfolioId}`}
+                        className="px-4 py-2 bg-dark-green text-cream text-xs font-semibold rounded-full hover:bg-brown transition-colors"
+                      >
                         Edit
-                      </button>
-                      <button className="px-4 py-2 bg-transparent text-dark-green text-xs font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors">
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          console.log('[Dashboard] Opening preview for portfolio:', portfolio.portfolioId, 'slug:', portfolio.slug);
+                          window.open(`/portfolio/${portfolio.slug}`, '_blank');
+                        }}
+                        className="px-4 py-2 bg-transparent text-dark-green text-xs font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors"
+                      >
                         Preview
                       </button>
-                      <button className="px-4 py-2 bg-transparent text-dark-green text-xs font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors">
+                      <button 
+                        onClick={() => handleEvaluate(portfolio.portfolioId)}
+                        disabled={evaluatingId === portfolio.portfolioId}
+                        className="px-4 py-2 bg-blue text-white text-xs font-semibold rounded-full hover:bg-blue/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {evaluatingId === portfolio.portfolioId ? 'Evaluating...' : portfolio.score > 0 ? 'Re-evaluate' : 'Evaluate with AI'}
+                      </button>
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/portfolio/${portfolio.slug}`);
+                          alert('Portfolio link copied to clipboard!');
+                        }}
+                        className="px-4 py-2 bg-transparent text-dark-green text-xs font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors"
+                      >
                         Share
                       </button>
                     </div>

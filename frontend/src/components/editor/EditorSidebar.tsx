@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, Dispatch } from "react";
+import { useState, useEffect, Dispatch } from "react";
 import type { Section, EditorAction } from "@/types/editor";
 import BackgroundPanel from "./panels/BackgroundPanel";
 import TypographyPanel from "./panels/TypographyPanel";
@@ -27,6 +27,9 @@ interface Props {
   canUndo: boolean;
   canRedo: boolean;
   onExport: () => void;
+  onSave: (isMainPortfolio: boolean) => Promise<void>;
+  isSaving: boolean;
+  initialIsMainPortfolio?: boolean;
 }
 
 export default function EditorSidebar({
@@ -39,8 +42,18 @@ export default function EditorSidebar({
   canUndo,
   canRedo,
   onExport,
+  onSave,
+  isSaving,
+  initialIsMainPortfolio = false,
 }: Props) {
   const [activeTab, setActiveTab] = useState<StyleTab>("background");
+  const [isMainPortfolio, setIsMainPortfolio] = useState(initialIsMainPortfolio);
+
+  // Sync checkbox state when initialIsMainPortfolio changes (e.g., when loading a different portfolio)
+  useEffect(() => {
+    setIsMainPortfolio(initialIsMainPortfolio);
+    console.log('[EditorSidebar] Initialized isMainPortfolio to:', initialIsMainPortfolio);
+  }, [initialIsMainPortfolio]);
 
   // Style panel view (when a section is selected)
   if (selectedSection) {
@@ -130,6 +143,25 @@ export default function EditorSidebar({
               Export
             </button>
           </div>
+          <label className="flex items-center gap-2 px-4 py-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isMainPortfolio}
+              onChange={(e) => setIsMainPortfolio(e.target.checked)}
+              className="w-4 h-4 rounded border-dark-green/20 text-gold focus:ring-gold focus:ring-offset-0"
+            />
+            <span className="text-xs text-brown/60">Set as main portfolio</span>
+          </label>
+          <button
+            onClick={() => {
+              console.log('[EditorSidebar] Save clicked with isMainPortfolio:', isMainPortfolio);
+              onSave(isMainPortfolio);
+            }}
+            disabled={isSaving}
+            className="w-full px-4 py-2.5 text-sm font-semibold text-cream bg-gold rounded-lg hover:bg-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSaving ? "Saving..." : "Save Portfolio"}
+          </button>
         </div>
       </aside>
     );
@@ -239,6 +271,25 @@ export default function EditorSidebar({
             Export
           </button>
         </div>
+        <label className="flex items-center gap-2 px-4 py-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isMainPortfolio}
+            onChange={(e) => setIsMainPortfolio(e.target.checked)}
+            className="w-4 h-4 rounded border-dark-green/20 text-gold focus:ring-gold focus:ring-offset-0"
+          />
+          <span className="text-xs text-brown/60">Set as main portfolio</span>
+        </label>
+        <button
+          onClick={() => {
+            console.log('[EditorSidebar] Save clicked with isMainPortfolio:', isMainPortfolio);
+            onSave(isMainPortfolio);
+          }}
+          disabled={isSaving}
+          className="w-full px-4 py-2.5 text-sm font-semibold text-cream bg-gold rounded-lg hover:bg-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSaving ? "Saving..." : "Save Portfolio"}
+        </button>
         <button
           onClick={onReset}
           className="w-full px-4 py-2.5 text-sm font-semibold text-brown/60 border-2 border-dark-green/10 rounded-full hover:border-gold hover:text-gold transition-colors"

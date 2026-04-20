@@ -46,6 +46,22 @@ body {
   animation: marquee 20s linear infinite;
 }
 
+/* Fade in animation */
+@keyframes fadeIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
 /* Retro shadow for logo text — thick bubbly drop shadow */
 .retro-shadow {
   text-shadow:
