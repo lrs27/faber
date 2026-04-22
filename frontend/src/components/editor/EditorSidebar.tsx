@@ -48,6 +48,8 @@ export default function EditorSidebar({
 }: Props) {
   const [activeTab, setActiveTab] = useState<StyleTab>("background");
   const [isMainPortfolio, setIsMainPortfolio] = useState(initialIsMainPortfolio);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   // Sync checkbox state when initialIsMainPortfolio changes (e.g., when loading a different portfolio)
   useEffect(() => {
@@ -195,25 +197,45 @@ export default function EditorSidebar({
           Sections
         </p>
         <div className="space-y-1">
-          {sections.map((section) => (
+          {sections.map((section, index) => (
             <div
               key={section.id}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer ${
                 section.visible
                   ? "bg-cream/50 text-dark-green hover:bg-cream"
                   : "text-brown/30"
-              }`}
+              } ${dragOverIndex === index && dragIndex !== index ? "ring-2 ring-gold ring-offset-1" : ""}`}
               onClick={() => onSelectSection(section.id)}
+              onDragOver={(e) => { e.preventDefault(); setDragOverIndex(index); }}
+              onDrop={() => {
+                if (dragIndex !== null && dragIndex !== index) {
+                  dispatch({ type: "REORDER_SECTIONS", fromIndex: dragIndex, toIndex: index });
+                }
+                setDragIndex(null);
+                setDragOverIndex(null);
+              }}
             >
-              {/* Grip icon */}
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" className="shrink-0 opacity-40">
-                <circle cx="5" cy="3" r="1.5" />
-                <circle cx="11" cy="3" r="1.5" />
-                <circle cx="5" cy="8" r="1.5" />
-                <circle cx="11" cy="8" r="1.5" />
-                <circle cx="5" cy="13" r="1.5" />
-                <circle cx="11" cy="13" r="1.5" />
-              </svg>
+              {/* Grip icon — drag handle */}
+              <span
+                draggable
+                className="shrink-0 flex items-center opacity-40 hover:opacity-70 cursor-grab active:cursor-grabbing"
+                onDragStart={(e) => {
+                  e.stopPropagation();
+                  setDragIndex(index);
+                  e.dataTransfer.effectAllowed = "move";
+                }}
+                onDragEnd={() => { setDragIndex(null); setDragOverIndex(null); }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                  <circle cx="5" cy="3" r="1.5" />
+                  <circle cx="11" cy="3" r="1.5" />
+                  <circle cx="5" cy="8" r="1.5" />
+                  <circle cx="11" cy="8" r="1.5" />
+                  <circle cx="5" cy="13" r="1.5" />
+                  <circle cx="11" cy="13" r="1.5" />
+                </svg>
+              </span>
 
               {/* Name */}
               <span className={`text-sm font-semibold flex-1 ${!section.visible ? "line-through" : ""}`}>
