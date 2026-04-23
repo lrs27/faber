@@ -386,13 +386,14 @@ export default function DashboardPage() {
                       )}
                     </div>
                     
+
+                  </div>
                     {portfolio.isPublished && (
                       <div className="absolute top-4 left-4 bg-green/90 rounded-full px-3 py-1.5 border-2 border-green shadow-sm">
                         <span className="text-xs font-bold text-white">Published</span>
                       </div>
                     )}
-                  </div>
-                  <div className="p-6">
+                    <div className="p-6">
                     <h3 className="text-lg font-bold text-dark-green">{portfolio.name}</h3>
                     <p className="text-sm text-brown/50 mt-1">
                       {portfolio.template} template &middot; Edited {formatTimeAgo(portfolio.lastEdited)}
@@ -401,6 +402,43 @@ export default function DashboardPage() {
                       {portfolio.viewCount} {portfolio.viewCount === 1 ? 'view' : 'views'}
                     </p>
                     <div className="mt-4 flex gap-2 flex-wrap">
+                      <button
+                        onClick={async () => {
+                          const token = localStorage.getItem("token");
+                          if (!token) {
+                            alert("Please log in to publish/unpublish your portfolio.");
+                            return;
+                          }
+                          try {
+                            const response = await fetch(`/api/portfolios/${portfolio.portfolioId}`, {
+                              method: "PUT",
+                              headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`,
+                              },
+                              body: JSON.stringify({
+                                ...portfolio,
+                                isPublished: !portfolio.isPublished,
+                              }),
+                            });
+                            if (!response.ok) {
+                              const data = await response.json();
+                              throw new Error(data.error || "Failed to update publish status");
+                            }
+                            setPortfolios((prev) => prev.map((p) =>
+                              p.portfolioId === portfolio.portfolioId
+                                ? { ...p, isPublished: !p.isPublished }
+                                : p
+                            ));
+                          } catch (err: any) {
+                            alert(err.message || "Failed to update publish status");
+                          }
+                        }}
+                        className={`px-4 py-2 text-xs font-semibold rounded-full border-2 transition-colors ${portfolio.isPublished ? "bg-white text-green border-green hover:bg-green/10" : "bg-white text-brown border-brown hover:bg-brown/10"}`}
+                        title={portfolio.isPublished ? "Unpublish portfolio (make private)" : "Publish portfolio (make public)"}
+                      >
+                        {portfolio.isPublished ? "Unpublish" : "Publish"}
+                      </button>
                       <Link
                         href={`/editor/${portfolio.template}?portfolioId=${portfolio.portfolioId}`}
                         className="px-4 py-2 bg-dark-green text-cream text-xs font-semibold rounded-full hover:bg-brown transition-colors"

@@ -140,6 +140,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
           title: title || existingPortfolio.title,
           slug: slug || existingPortfolio.slug,
           isMainPortfolio: isMainPortfolio !== undefined ? isMainPortfolio : existingPortfolio.isMainPortfolio,
+          isPublished: body.isPublished !== undefined ? body.isPublished : existingPortfolio.isPublished,
           updatedAt: new Date(),
         },
       });
