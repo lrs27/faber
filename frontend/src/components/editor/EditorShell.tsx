@@ -13,6 +13,7 @@ import type {
 import { getDefaultState } from "@/data/defaults";
 import { useUndoReducer } from "@/hooks/useUndoReducer";
 import { downloadHtml } from "@/lib/exportHtml";
+import { downloadPdf } from "@/lib/exportPDF";
 import EditorSidebar from "./EditorSidebar";
 import EditorCanvas from "./EditorCanvas";
 
@@ -297,6 +298,10 @@ export default function EditorShell({ templateStyle }: Props) {
     downloadHtml(templateStyle);
   }, [templateStyle]);
 
+  const handleExportPdf = useCallback(() => {
+    downloadPdf(templateStyle);
+  }, [templateStyle]);
+
   const handleSave = useCallback(async (isMainPortfolio: boolean = false) => {
     try {
       setIsSaving(true);
@@ -464,6 +469,7 @@ export default function EditorShell({ templateStyle }: Props) {
         canUndo={canUndo}
         canRedo={canRedo}
         onExport={handleExport}
+        onExportPdf={handleExportPdf}
         onSave={handleSave}
         isSaving={isSaving}
         initialIsMainPortfolio={currentIsMainPortfolio}

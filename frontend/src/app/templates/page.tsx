@@ -158,21 +158,25 @@ export default function TemplatesPage() {
         </div>
       </section>
 
-      <h2
-        className="text-3xl md:text-4xl font-bold text-dark-green mb-4"
-        style={{ fontFamily: "var(--font-playfair)" }}
-      >
-        Don&apos;t see what you need?
-      </h2>
-      <p className="text-brown/70 mb-8">
-        New templates are added regularly. Sign up to get notified when new designs drop.
-      </p>
-      <Link
-        href="/login"
-        className="px-8 py-3 bg-dark-green text-cream font-semibold rounded-full border-2 border-dark-green hover:bg-brown hover:border-brown transition-colors inline-block"
-      >
-        Get Started Free
-      </Link>
+      <section className="px-8 md:px-16 py-16 md:py-24 text-center">
+        <div className="max-w-xl mx-auto">
+          <h2
+            className="text-3xl md:text-4xl font-bold text-dark-green mb-4"
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            Don&apos;t see what you need?
+          </h2>
+          <p className="text-brown/70 mb-8">
+            New templates are added regularly. Sign up to get notified when new designs drop.
+          </p>
+          <Link
+            href="/login"
+            className="px-8 py-3 bg-dark-green text-cream font-semibold rounded-full border-2 border-dark-green hover:bg-brown hover:border-brown transition-colors inline-block"
+          >
+            Get Started Free
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
