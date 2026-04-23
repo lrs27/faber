@@ -27,6 +27,7 @@ interface Props {
   canUndo: boolean;
   canRedo: boolean;
   onExport: () => void;
+  onExportPdf: () => void;
   onSave: (isMainPortfolio: boolean) => Promise<void>;
   isSaving: boolean;
   initialIsMainPortfolio?: boolean;
@@ -42,6 +43,7 @@ export default function EditorSidebar({
   canUndo,
   canRedo,
   onExport,
+  onExportPdf,
   onSave,
   isSaving,
   initialIsMainPortfolio = false,
@@ -142,7 +144,14 @@ export default function EditorSidebar({
               className="flex-1 px-3 py-2 text-xs font-semibold text-cream bg-dark-green rounded-lg hover:bg-dark-green/80 transition-colors"
               title="Export as HTML"
             >
-              Export
+              HTML
+            </button>
+            <button
+              onClick={onExportPdf}
+              className="flex-1 px-3 py-2 text-xs font-semibold text-dark-green border border-dark-green/30 rounded-lg hover:bg-beige transition-colors"
+              title="Export as PDF"
+            >
+              PDF
             </button>
           </div>
           <label className="flex items-center gap-2 px-4 py-2 cursor-pointer">
@@ -289,8 +298,16 @@ export default function EditorSidebar({
           <button
             onClick={onExport}
             className="flex-1 px-3 py-2 text-xs font-semibold text-cream bg-dark-green rounded-lg hover:bg-dark-green/80 transition-colors"
+            title="Export as HTML"
           >
-            Export
+            HTML
+          </button>
+          <button
+            onClick={onExportPdf}
+            className="flex-1 px-3 py-2 text-xs font-semibold text-dark-green border border-dark-green/30 rounded-lg hover:bg-beige transition-colors"
+            title="Export as PDF"
+          >
+            PDF
           </button>
         </div>
         <label className="flex items-center gap-2 px-4 py-2 cursor-pointer">
