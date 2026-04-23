@@ -31,7 +31,7 @@ export default function StartupSkills({ section, dispatch }: Props) {
           }
           className="text-3xl md:text-4xl font-bold text-dark-green text-center mb-12"
         />
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-wrap justify-center items-center gap-7">
           {content.skills.map((skill, i) => (
             <div key={skill.id} className="group/skill relative">
               <InlineEditable
@@ -51,18 +51,21 @@ export default function StartupSkills({ section, dispatch }: Props) {
               </button>
             </div>
           ))}
-          <button
-            onClick={() =>
-              dispatch({
-                type: "ADD_SKILL",
-                sectionId: section.id,
-                skill: { id: crypto.randomUUID(), name: "New Skill" },
-              })
-            }
-            className="px-5 py-2.5 rounded-full border-2 border-dashed border-dark-green/20 text-sm font-bold text-brown/40 hover:border-gold hover:text-gold transition-colors"
-          >
-            + Add Skill
-          </button>
+
+          <div className="group/add-skill relative">
+            <span className="px-5 py-2.5 rounded-full border-2 border-dashed border-dark-green/20 text-sm font-bold text-brown/40 group-hover/add-skill:border-gold group-hover/add-skill:text-gold transition-colors">+ Add Skill</span>
+            <button
+              onClick={() =>
+                dispatch({
+                  type: "ADD_SKILL",
+                  sectionId: section.id,
+                  skill: { id: crypto.randomUUID(), name: "New Skill" },
+                })
+              }
+              className="absolute h-11 w-full -top-2.5 left-0"
+            >
+            </button>
+          </div>
         </div>
       </div>
     </section>
