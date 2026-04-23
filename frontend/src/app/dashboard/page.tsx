@@ -74,6 +74,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [evaluatingId, setEvaluatingId] = useState<string | null>(null);
   const [hoveredPortfolio, setHoveredPortfolio] = useState<string | null>(null);
+  const [showCopiedToast, setShowCopiedToast] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -257,6 +258,15 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-cream">
+      {/* Copied-to-clipboard toast */}
+      <div
+        className={`fixed top-6 left-1/2 -translate-x-1/2 z-100 px-5 py-3 bg-dark-green text-cream text-sm font-semibold rounded-full shadow-lg transition-all duration-300 pointer-events-none ${
+          showCopiedToast ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-3"
+        }`}
+      >
+        Copied to Clipboard!
+      </div>
+
       <Navbar />
 
       {/* ===== HEADER ===== */}
@@ -416,7 +426,8 @@ export default function DashboardPage() {
                       <button 
                         onClick={() => {
                           navigator.clipboard.writeText(`${window.location.origin}/portfolio/${portfolio.slug}`);
-                          alert('Portfolio link copied to clipboard!');
+                          setShowCopiedToast(true);
+                          setTimeout(() => setShowCopiedToast(false), 2500);
                         }}
                         className="px-4 py-2 bg-transparent text-dark-green text-xs font-semibold rounded-full border-2 border-dark-green/20 hover:border-gold transition-colors"
                       >
